@@ -48,7 +48,7 @@
 /* Small pie & bar charts */
 .small-chart canvas {
   width: 91% !important;
-  height: 100% !important;
+  height: 90% !important;
 }
 
 /* Line chart */
@@ -178,4 +178,46 @@
 
 .date-range-box span {
   color: #6b7280;
+}
+
+.no-data {
+  text-align: center;
+  padding: 100px;
+  font-size: 20px;
+  color: #282727;
+  font-weight: 500;
+}
+
+.table-tooltip {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  max-width: 150px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.table-tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  max-width: 300px;
+  background-color: rgba(3, 3, 4, 0.8);
+  color: #fbf5f5;
+  text-align: left;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  position: absolute;
+  z-index: 1000;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: normal;
+}
+
+.table-tooltip:hover .table-tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

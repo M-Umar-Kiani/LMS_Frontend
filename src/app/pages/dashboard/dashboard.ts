@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PopularBook } from '../../models/Book.model';
 import { TooltipPipe } from '../../custom-pipes/tooltip-pipe';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,12 +15,21 @@ import { TooltipPipe } from '../../custom-pipes/tooltip-pipe';
   imports: [CommonModule, FormsModule, TooltipPipe],
 })
 export class Dashboard implements OnInit {
+  categoryChart: Chart | null = null;
+  departmentChart: Chart | null = null;
+  activityChart: Chart | null = null;
+
   departmentWidgetData: DepartmentWidgetDto = {
     departmentName: [],
     bookCount: [],
   };
   categoryWidgetData: CategoryWidgetDto = {
     categoryName: [],
+    bookCount: [],
+  };
+
+  monthilyActivityWidgetData: MonthilyActivityWidget = {
+    monthName: [],
     bookCount: [],
   };
 
@@ -93,13 +103,38 @@ export class Dashboard implements OnInit {
   }
 
   refreshDashboard() {
-    this.GetTotalBooksCount();
-    this.GetDownloadedBooksCount();
-    this.getCategoryWidgetData();
-    this.getDepartmentidgetData();
-    this.getPopularBooks();
+    forkJoin({
+      totalBooks: this.widgetService.GetTotalBooksCount(this.datePayload),
+      downloadedBooks: this.widgetService.GetDownloadedBooksCount(this.datePayload),
+      category: this.widgetService.GetBookByCategoryWidget(this.datePayload),
+      department: this.widgetService.GetBookByDepartmentWidget(this.datePayload),
+      popularBooks: this.widgetService.GetPopularBooks(this.datePayload),
+      monthlyActivity: this.widgetService.GetMonthlyActivityWidget(this.datePayload),
+    }).subscribe({
+      next: (res: any) => {
+        this.bookCount = res.totalBooks.bookCount;
+        this.downloadedBooksCount = res.downloadedBooks.bookCount;
 
-    setTimeout(() => this.createCharts(), 300);
+        this.categoryWidgetData = res.category;
+        this.departmentWidgetData = res.department;
+
+        this.popularBooks = res.popularBooks.map((book: any, index: number) => ({
+          rank: index + 1,
+          title: book.title,
+          author: book.author,
+          dept: book.department,
+          download: book.downloads,
+        }));
+
+        this.monthilyActivityWidgetData = res.monthlyActivity;
+
+        // Now all data is ready, create charts
+        this.createCharts();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   get datePayload() {
@@ -145,10 +180,6 @@ export class Dashboard implements OnInit {
   }
 
   getDepartmentidgetData() {
-    const datePayload = {
-      startDate: this.startDate,
-      endDate: this.endDate,
-    };
     this.widgetService.GetBookByDepartmentWidget(this.datePayload).subscribe({
       next: (resp: DepartmentWidgetDto) => {
         this.departmentWidgetData = resp;
@@ -158,12 +189,7 @@ export class Dashboard implements OnInit {
   }
 
   getPopularBooks() {
-    const payload = {
-      startDate: this.startDate,
-      endDate: this.endDate,
-    };
-
-    this.widgetService.GetPopularBooks(payload).subscribe({
+    this.widgetService.GetPopularBooks(this.datePayload).subscribe({
       next: (resp: any[]) => {
         this.popularBooks = resp.map((book, index) => ({
           rank: index + 1,
@@ -179,6 +205,15 @@ export class Dashboard implements OnInit {
     });
   }
 
+  getMonthlyActivityWidget() {
+    this.widgetService.GetMonthlyActivityWidget(this.datePayload).subscribe({
+      next: (resp: MonthilyActivityWidget) => {
+        this.monthilyActivityWidgetData = resp;
+      },
+      error: (err) => {},
+    });
+  }
+
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       setTimeout(() => {
@@ -188,14 +223,16 @@ export class Dashboard implements OnInit {
   }
 
   createCharts(): void {
-    // ✅ Category Distribution (same as your desired first screenshot)
     const categoryCanvas = document.getElementById('categoryChart') as HTMLCanvasElement;
     if (categoryCanvas) {
+      if (this.categoryChart) {
+        this.categoryChart.destroy();
+      }
       const colors = this.categoryWidgetData.categoryName.map(
         () => '#' + Math.floor(Math.random() * 16777215).toString(16) // generates random hex colors
       );
 
-      new Chart(categoryCanvas, {
+      this.categoryChart = new Chart(categoryCanvas, {
         type: 'pie',
         data: {
           labels: this.categoryWidgetData.categoryName,
@@ -258,10 +295,12 @@ export class Dashboard implements OnInit {
       });
     }
 
-    // ✅ Books by Department (Bar Chart)
-    const deptCanvas = document.getElementById('deptChart') as HTMLCanvasElement;
-    if (deptCanvas) {
-      new Chart(deptCanvas, {
+    const departmentCanvas = document.getElementById('deptChart') as HTMLCanvasElement;
+    if (departmentCanvas) {
+      if (this.departmentChart) {
+        this.departmentChart.destroy();
+      }
+      this.departmentChart = new Chart(departmentCanvas, {
         type: 'bar',
         data: {
           labels: this.departmentWidgetData.departmentName,
@@ -308,23 +347,28 @@ export class Dashboard implements OnInit {
       });
     }
 
-    // Monthly Activity line chart
-    new Chart('activityChart', {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [
-          {
-            label: 'Borrows',
-            data: [45, 52, 38, 61, 49, 55],
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59,130,246,0.2)',
-            fill: true,
-            tension: 0.3,
-          },
-        ],
-      },
-      options: { plugins: { legend: { display: false } } },
-    });
+    const activityCanvas = document.getElementById('activityChart') as HTMLCanvasElement;
+    if (activityCanvas) {
+      if (this.activityChart) {
+        this.activityChart.destroy();
+      }
+      this.activityChart = new Chart('activityChart', {
+        type: 'line',
+        data: {
+          labels: this.monthilyActivityWidgetData.monthName,
+          datasets: [
+            {
+              label: 'Borrows',
+              data: this.monthilyActivityWidgetData.bookCount,
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59,130,246,0.2)',
+              fill: true,
+              tension: 0.3,
+            },
+          ],
+        },
+        options: { plugins: { legend: { display: false } } },
+      });
+    }
   }
 }

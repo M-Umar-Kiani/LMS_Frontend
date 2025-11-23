@@ -7,3 +7,7 @@ interface CategoryWidgetDto {
   categoryName: string[];
   bookCount: number[];
 }
+interface MonthilyActivityWidget {
+  monthName: string[];
+  bookCount: number[];
+}

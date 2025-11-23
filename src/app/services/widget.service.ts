@@ -27,4 +27,8 @@ export class WidgetService {
   GetPopularBooks(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/get-popular-books`, data);
   }
+
+  GetMonthlyActivityWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-monthly-activity-data`, data);
+  }
 }

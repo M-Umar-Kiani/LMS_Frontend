@@ -58,11 +58,7 @@
     </div>
 
     <div class="chart-card small-chart popular-card">
-      <div class="chart-header">
-        <h4>Most Popular Books</h4>
-        <a href="#">Export</a>
-      </div>
-
+      <h3>Top Rated Books</h3>
       <!-- Check if there is data -->
       <table class="excel-table" *ngIf="popularBooks && popularBooks.length > 0; else noData">
         <thead>
@@ -77,9 +73,25 @@
         <tbody>
           <tr *ngFor="let b of popularBooks">
             <td>{{ b.rank }}</td>
-            <td>{{ b.title | tooltip:15 }}</td>
-            <td>{{ b.author | tooltip:15}}</td>
-            <td>{{ b.dept | tooltip:15}}</td>
+
+            <!-- Title column -->
+            <td class="table-tooltip">
+              {{ b.title | tooltip:15 }}
+              <span class="table-tooltiptext" *ngIf="(b?.title?.length ?? 0) > 15">{{ b.title }}</span>
+            </td>
+
+            <!-- Author column -->
+            <td class="table-tooltip">
+              {{ b.author | tooltip:15 }}
+              <span class="table-tooltiptext" *ngIf="(b?.author?.length ?? 0) > 15">{{ b.author }}</span>
+            </td>
+
+            <!-- Department column -->
+            <td class="table-tooltip">
+              {{ b.dept | tooltip:15 }}
+              <span class="table-tooltiptext" *ngIf="(b?.dept?.length ?? 0) > 15">{{ b.dept }}</span>
+            </td>
+
             <td><span class="badge green">{{ b.download }} times</span></td>
           </tr>
         </tbody>
