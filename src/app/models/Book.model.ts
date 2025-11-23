@@ -5,3 +5,11 @@ export interface DownloadResponseDto {
   contentType?: string;
   base64Data?: string;
 }
+
+export interface PopularBook {
+  rank: number;
+  title: string;
+  author: string;
+  dept: string;
+  download: number;
+}

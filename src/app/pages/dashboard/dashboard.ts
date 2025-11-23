@@ -3,6 +3,7 @@ import { Chart } from 'chart.js/auto';
 import { WidgetService } from '../../services/widget.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PopularBook } from '../../models/Book.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,15 +22,7 @@ export class Dashboard implements OnInit {
     bookCount: [],
   };
 
-  popularBooks = [
-    {
-      rank: 1,
-      title: 'I to Algorithms',
-      author: 'Thomas H. Cormen',
-      dept: 'Computer Science',
-      download: 1,
-    },
-  ];
+  popularBooks: PopularBook[] = [];
 
   bookCount: number = 0;
   downloadedBooksCount: number = 0;
