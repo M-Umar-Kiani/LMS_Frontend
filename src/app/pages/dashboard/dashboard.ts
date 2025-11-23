@@ -4,13 +4,14 @@ import { WidgetService } from '../../services/widget.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PopularBook } from '../../models/Book.model';
+import { TooltipPipe } from '../../custom-pipes/tooltip-pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TooltipPipe],
 })
 export class Dashboard implements OnInit {
   departmentWidgetData: DepartmentWidgetDto = {
