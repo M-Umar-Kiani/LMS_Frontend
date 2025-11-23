@@ -1,0 +1,87 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <!-- Left Side -->
+    <div class="header-left">
+      <h2>Dashboard</h2>
+      <br>
+      <p>Overview of your library management system</p>
+    </div>
+
+    <!-- Right Side — Date Filter -->
+    <div class="header-right">
+      <div class="date-filter-wrapper">
+        <select class="date-filter-select" [(ngModel)]="selectedRange" (change)="onRangeChange()">
+          <option value="monthToDate">Month to Date</option>
+          <option value="lastMonth">Last Month</option>
+          <option value="lastThreeMonths">Last 3 Months</option>
+          <option value="thisYear">This Year</option>
+          <option value="lastYear">Last Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+
+        <div class="date-range-box" *ngIf="selectedRange === 'custom'">
+          <input type="date" [(ngModel)]="startDate" (change)="onCustomDateChange()" />
+          <span>to</span>
+          <input type="date" [(ngModel)]="endDate" (change)="onCustomDateChange()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="card total">
+      <h3>Total Books</h3>
+      <p class="count">{{ bookCount }}</p>
+    </div>
+    <div class="card borrowed">
+      <h3>Downloads</h3>
+      <p class="count">{{ downloadedBooksCount }}</p>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card small-chart">
+      <h3>Category Distribution</h3>
+      <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="chart-card small-chart">
+      <h3>Books by Department</h3>
+      <canvas id="deptChart"></canvas>
+    </div>
+
+    <div class="chart-card small-chart">
+      <h3>Monthly Activity</h3>
+      <canvas id="activityChart"></canvas>
+    </div>
+
+    <div class="chart-card small-chart popular-card">
+      <div class="chart-header">
+        <h4>Most Popular Books</h4>
+        <a href="#">Export</a>
+      </div>
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Book</th>
+            <th>Author</th>
+            <th>Department</th>
+            <th>Borrows</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of popularBooks">
+            <td>{{ b.rank }}</td>
+            <td>{{ b.title }}</td>
+            <td>{{ b.author }}</td>
+            <td>{{ b.dept }}</td>
+            <td><span class="badge green">{{ b.download }} times</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

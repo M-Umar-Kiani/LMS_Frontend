@@ -1,0 +1,146 @@
+<div class="books-container">
+  <!-- Header -->
+  <div class="books-header">
+    <div>
+      <h2>Books Management</h2>
+      <p>Manage your library collection</p>
+    </div>
+    <button class="add-btn" (click)="openAddModal()">+ Add Book</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" placeholder="Search by title or author..." [(ngModel)]="searchTerm" (input)="onSearchChange()" />
+
+    <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
+      <option value="">All Categories</option>
+      <option value="Book">Book</option>
+      <option value="Magazine">Magazine</option>
+      <option value="Article">Article</option>
+    </select>
+
+    <select [(ngModel)]="selectedDepartment" (change)="applyFilter()">
+      <option value="">All Departments</option>
+      <option value="Computer Science">Computer Science</option>
+      <option value="Management Science">Management Science</option>
+      <option value="Social Science">Social Science</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Book Details</th>
+        <th>Category</th>
+        <th>Department</th>
+        <th>Year</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let book of books">
+        <td>
+          <div class="book-info">
+            <!-- <img src="https://via.placeholder.com/40" alt="book" /> -->
+            <div>
+              <strong>{{ limitWords(book.title, 8) }}</strong>
+              <br />
+              <small>by {{ limitWords(book.author, 5) }}</small><br />
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="badge blue">{{ book.category }}</span>
+        </td>
+        <td>{{ book.department }}</td>
+        <td>{{ book.year }}</td>
+
+        <td>
+          <button class="icon-btn" (click)="downloadDocument(book.documentId)">⬇️</button>
+          <button class="icon-btn" (click)="openEditModel(book)">✏️</button>
+          <button class="icon-btn delete" (click)="deleteBook(book.documentId)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="pageNumber === 1">⬅ Previous</button>
+    <span>Page {{ pageNumber }}</span>
+    <button (click)="nextPage()" [disabled]="books.length < pageSize">Next ➡</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📘 {{ isEdit ? 'Edit' : 'Add New' }} Book</h3>
+      <button class="close-btn" (click)="closeModal()">✖</button>
+    </div>
+
+    <form [formGroup]="bookForm">
+      <div class="form-grid">
+        <!-- Row 1: Book Title -->
+        <div class="form-field full-width">
+          <label for="bookTitle">Book Title *</label>
+          <input id="bookTitle" type="text" formControlName="bookTitle" name="title" required />
+        </div>
+
+        <!-- Row 2: Author -->
+        <div class="form-field">
+          <label for="author">Author *</label>
+          <input id="author" type="text" formControlName="author" name="author" required />
+        </div>
+
+        <!-- Row 2: Year -->
+        <div class="form-field">
+          <label for="year">Year *</label>
+          <input id="year" type="number" formControlName="year" name="year" required />
+        </div>
+
+        <!-- Row 3: Category -->
+        <div class="form-field">
+          <label for="category">Category *</label>
+          <select id="category" formControlName="category" name="category">
+            <option>Book</option>
+            <option>Magazine</option>
+            <option>Article</option>
+          </select>
+        </div>
+
+        <!-- Row 3: Department -->
+        <div class="form-field">
+          <label for="department">Department *</label>
+          <select id="department" formControlName="department" name="department">
+            <option>Computer Science</option>
+            <option>Management Science</option>
+            <option>Social Science</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- File Upload Section -->
+      <div class="upload-box" *ngIf="!isEdit">
+        <label class="file-label" for="fileUpload">
+          📂 Choose File
+          <input id="fileUpload" type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.jpg,.png" />
+        </label>
+        <small> Only one file can be uploaded (PDF or Image)</small>
+
+        <!-- Optional: show preview -->
+        <div *ngIf="selectedFile" class="file-preview">
+          <strong>📄 {{ selectedFile.name }}</strong>
+          ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="save-btn" (click)="addBook()" *ngIf="!isEdit">Save</button>
+        <button type="submit" class="save-btn" (click)="editBook()" *ngIf="isEdit">Update</button>
+      </div>
+    </form>
+  </div>
+</div>

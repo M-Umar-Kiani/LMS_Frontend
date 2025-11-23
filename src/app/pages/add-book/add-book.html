@@ -1,0 +1,43 @@
+<div class="form-container">
+  <h2>📘 Add New Book qq</h2>
+  <!-- #bookForm="ngForm" -->
+  <form [formGroup]="bookForm">
+    <div class="form-grid">
+      <!-- [(ngModel)]="newBook.title" -->
+      <input type="text" placeholder="Title *" formControlName="title" name="title" required />
+      <!-- [(ngModel)]="newBook.author" -->
+      <input type="text" placeholder="Author *" formControlName="author" name="author" required />
+      <!-- [(ngModel)]="newBook.year" -->
+      <input type="number" placeholder="Year *" formControlName="year" name="year" required />
+      <!-- [(ngModel)]="newBook.category" -->
+      <select formControlName="category" name="category" required>
+        <option>Book</option>
+        <option>Magazine</option>
+        <option>Article</option>
+      </select>
+
+      <!-- [(ngModel)]="newBook.department" -->
+      <select name="department" formControlName="department" required>
+        <option>Computer Science</option>
+        <option>Management Science</option>
+        <option>Social Science</option>
+      </select>
+    </div>
+
+    <textarea placeholder="Description" name="description" formControlName="description"></textarea>
+
+    <div class="upload-box">
+      <input type="file" (change)="onFileSelected($event)" accept="application/pdf" />
+      <small>📂 Click to upload PDF file (PDF only)</small>
+      <div *ngIf="selectedFile" class="file-preview">
+        <strong>📄 {{ selectedFile.name }}</strong> ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" routerLink="/books" class="cancel-btn" (click)="cancel()">Cancel</button>
+      <button type="submit" class="save-btn" (click)="addBook()">Add Book 2</button>
+      
+    </div>
+  </form>
+</div>

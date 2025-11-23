@@ -1,0 +1,85 @@
+<div class="reports-container">
+  <div class="header">
+    <h2>Reports & Analytics</h2>
+    <p>Library usage statistics and insights</p>
+    <div class="actions">
+      <select>
+        <option>This Month</option>
+        <option>Last Month</option>
+        <option>This Year</option>
+      </select>
+      <button class="export-btn">Export Report</button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="cards-grid">
+    <div class="card">
+      <h4>Total Books</h4>
+      <h2>8</h2>
+      <small>📘 12% vs last month</small>
+    </div>
+    <div class="card">
+      <h4>Active Users</h4>
+      <h2>3</h2>
+      <small>👤 8% vs last month</small>
+    </div>
+    <div class="card">
+      <h4>Active Borrows</h4>
+      <h2>1</h2>
+      <small>📈 15% vs last month</small>
+    </div>
+    <div class="card">
+      <h4>Total Borrows</h4>
+      <h2>3</h2>
+      <small>📊 23% vs last month</small>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>Department Usage</h4>
+        <a href="#">Export</a>
+      </div>
+      <canvas id="deptChart"></canvas>
+    </div>
+
+    <!-- <div class="chart-card">
+      <div class="chart-header">
+        <h4>Monthly Activity</h4>
+        <a href="#">Export</a>
+      </div>
+      <canvas id="activityChart"></canvas>
+    </div> -->
+  </div>
+
+  <!-- Popular Books Table -->
+  <!-- <div class="popular-card">
+    <div class="chart-header">
+      <h4>Most Popular Books</h4>
+      <a href="#">Export</a>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Book</th>
+          <th>Author</th>
+          <th>Department</th>
+          <th>Borrows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of popularBooks">
+          <td>{{ b.rank }}</td>
+          <td>{{ b.title }}</td>
+          <td>{{ b.author }}</td>
+          <td>{{ b.dept }}</td>
+          <td><span class="badge green">{{ b.borrows }} times</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div> -->
+</div>

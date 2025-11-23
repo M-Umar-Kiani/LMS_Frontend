@@ -1,0 +1,168 @@
+.bulk-upload-container {
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.default-settings {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.form-group select {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.upload-box {
+  background: #fff;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  text-align: center;
+  padding: 40px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: 0.2s ease;
+}
+
+.upload-box:hover {
+  background: #f9fafb;
+}
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6b7280;
+}
+
+.upload-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.choose-btn {
+  margin-top: 10px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.choose-btn:hover {
+  background: #1d4ed8;
+}
+
+.selected-files {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.selected-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.clear-btn,
+.upload-btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.clear-btn {
+  background: #f3f4f6;
+  color: #374151;
+  margin-right: 10px;
+}
+
+.upload-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.upload-btn:hover {
+  background: #1e40af;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px 15px;
+  background: #fafafa;
+}
+
+.file-icon {
+  margin-right: 10px;
+}
+
+.file-name {
+  flex: 1;
+  color: #111827;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  color: #6b7280;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.remove-btn {
+  border: none;
+  background: none;
+  color: #ef4444;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  color: #b91c1c;
+}

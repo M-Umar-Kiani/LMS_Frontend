@@ -1,0 +1,97 @@
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">
+    <h2>📘 Digital Library</h2>
+    <p>Student Portal</p>
+  </div>
+
+  <ul class="nav-links">
+    <li class="active">Home</li>
+    <li>Browse Books</li>
+    <li>My Books</li>
+  </ul>
+
+  <div class="profile">
+    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
+    <div>
+      <strong>John Smith</strong><br />
+      <small>Computer Science</small>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="user-dashboard">
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="card">
+      <div class="icon">📘</div>
+      <div>
+        <h3>8</h3>
+        <p>Total Books 2</p>
+        <small>+12% this month</small>
+      </div>
+    </div>
+
+    <div class="card green">
+      <div class="icon">📗</div>
+      <div>
+        <h3>7</h3>
+        <p>Available Books</p>
+        <small>Ready to borrow</small>
+      </div>
+    </div>
+
+    <div class="card orange">
+      <div class="icon">⏰</div>
+      <div>
+        <h3>1</h3>
+        <p>Currently Borrowed</p>
+        <small>Your active books</small>
+      </div>
+    </div>
+
+    <div class="card purple">
+      <div class="icon">📈</div>
+      <div>
+        <h3>1</h3>
+        <p>Books Read</p>
+        <small>Total completed</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h4>Department-wise Distribution</h4>
+      <p>Books available across departments</p>
+      <canvas id="deptChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h4>Category-wise Books</h4>
+      <p>Distribution by book category</p>
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Latest Books -->
+  <div class="latest-books">
+    <h3>Latest Books</h3>
+    <p>Recently added to our collection</p>
+    <div class="book-carousel">
+      <div class="book-card" *ngFor="let book of latestBooks">
+        <img [src]="book.image" alt="book" />
+        <div class="info">
+          <h4>{{ book.title }}</h4>
+          <p>{{ book.author }}</p>
+          <div class="footer">
+            <small>{{ book.year }}</small>
+            <span class="badge">{{ book.category }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

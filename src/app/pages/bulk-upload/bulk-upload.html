@@ -1,0 +1,62 @@
+<div class="bulk-upload-container">
+  <h2>Bulk Upload</h2>
+  <p>Upload multiple PDF files at once</p>
+
+  <!-- Default Settings -->
+  <div class="default-settings">
+    <div class="form-group">
+      <label>Default Category</label>
+      <select [(ngModel)]="selectedCategory">
+        <option>Book</option>
+        <option>Magazine</option>
+        <option>Article</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Default Department</label>
+      <select [(ngModel)]="selectedDepartment">
+        <option>Computer Science</option>
+        <option>Management Science</option>
+        <option>Social Science</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- File Upload Section -->
+  <div class="upload-box" (click)="fileInput.click()">
+    <input
+      type="file"
+      #fileInput
+      multiple
+      accept="application/pdf"
+      (change)="onFileSelected($event)"
+      hidden
+    />
+    <div class="upload-area">
+      <span class="upload-icon">⬆️</span>
+      <p><strong>Upload PDF Files</strong></p>
+      <small>Select multiple PDF files to upload at once</small>
+      <button class="choose-btn">Choose Files</button>
+    </div>
+  </div>
+
+  <!-- Selected Files -->
+  <div class="selected-files" *ngIf="files.length > 0">
+    <div class="selected-header">
+      <h3>Selected Files ({{ files.length }})</h3>
+      <div>
+        <button class="clear-btn" (click)="clearAll()">Clear All</button>
+        <button class="upload-btn" (click)="uploadAll()">Upload All</button>
+      </div>
+    </div>
+
+    <div class="file-list">
+      <div class="file-item" *ngFor="let file of files; let i = index">
+        <span class="file-icon">📄</span>
+        <span class="file-name">{{ file.name }}</span>
+        <span class="file-size">{{ file.size }} MB</span>
+        <button class="remove-btn" (click)="removeFile(i)">✖</button>
+      </div>
+    </div>
+  </div>
+</div>

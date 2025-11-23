@@ -1,0 +1,116 @@
+<nav class="navbar">
+  <div class="logo">
+    <h2>📘 Digital Library</h2>
+    <p>Student Portal</p>
+  </div>
+
+  <ul class="nav-links">
+    <li routerLink="/user/dashboard" routerLinkActive="active">Home</li>
+    <li class="active">Browse Books</li>
+    <li>My Books</li>
+    <li>Profile</li>
+  </ul>
+
+  <div class="profile">
+    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
+    <div>
+      <strong>John Smith</strong><br />
+      <small>Computer Science</small>
+    </div>
+  </div>
+</nav>
+
+<div class="browse-container">
+  <!-- Filters -->
+  <div class="filters-bar">
+    <input type="text" placeholder="Search by Title, Author, or Department..." />
+    <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
+      <option value="">All Categories</option>
+      <option value="Book">Book</option>
+      <option value="Magazine">Magazine</option>
+      <option value="Article">Article</option>
+    </select>
+
+    <select [(ngModel)]="selectedDepartment" (change)="applyFilter()">
+      <option value="">All Departments</option>
+      <option value="Computer Science">Computer Science</option>
+      <option value="Management Science">Management Science</option>
+      <option value="Social Science">Social Science</option>
+    </select>
+  </div>
+
+  <!-- Book Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Book Details</th>
+          <th>Category</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td>
+            <div class="book-info">
+              <img src="https://via.placeholder.com/40" alt="book" />
+              <div>
+                <strong>{{ limitWords(book.title, 8) }}</strong><br />
+                <small>by {{ limitWords(book.author, 5) }}</small><br />
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge blue">{{ book.category }}</span>
+          </td>
+          <td>{{ book.department }}</td>
+          <td>{{ book.year }}</td>
+
+          <td>
+            <button class="icon-btn">⬇️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="pageNumber === 1">⬅ Previous</button>
+      <span>Page {{ pageNumber }}</span>
+      <button (click)="nextPage()" [disabled]="books.length < pageSize">Next ➡</button>
+    </div>
+    <!-- <table>
+      <thead>
+        <tr>
+          <th>Book Details</th>
+          <th>Category</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td>
+            <div class="book-info">
+              <img [src]="book.image" alt="book" />
+              <div>
+                <strong>{{ book.title }}</strong><br />
+                <small>by {{ book.author }}</small><br />
+                <small>ISBN: {{ book.isbn }}</small>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge blue">{{ book.category }}</span></td>
+          <td>{{ book.department }}</td>
+          <td>{{ book.year }}</td>
+          <td>
+            <button class="icon-btn">
+              ⬇️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
+  </div>
+</div>
