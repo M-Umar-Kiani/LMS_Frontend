@@ -44,17 +44,59 @@
   <div class="charts-grid">
     <div class="chart-card small-chart">
       <h3>Category Distribution</h3>
-      <canvas id="categoryChart"></canvas>
+
+      <button class="card-download-btn" (click)="downloadDepartmentReportExcel()"
+        [disabled]="!hasData(categoryWidgetData)" title="Download CSV">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z" />
+        </svg>
+      </button>
+
+      <ng-container *ngIf="hasData(categoryWidgetData); else noCategory">
+        <canvas id="categoryChart"></canvas>
+      </ng-container>
+
+      <ng-template #noCategory>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
     </div>
 
     <div class="chart-card small-chart">
       <h3>Books by Department</h3>
-      <canvas id="deptChart"></canvas>
+
+      <button class="card-download-btn" (click)="downloadDepartmentReportExcel()"
+        [disabled]="!hasData(departmentWidgetData)" title="Download CSV">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z" />
+        </svg>
+      </button>
+
+      <ng-container *ngIf="departmentWidgetData != null && departmentWidgetData.bookCount.length > 0; else noDept">
+        <canvas id="deptChart"></canvas>
+      </ng-container>
+
+      <ng-template #noDept>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
     </div>
 
     <div class="chart-card small-chart">
       <h3>Monthly Activity</h3>
-      <canvas id="activityChart"></canvas>
+
+      <button class="card-download-btn" (click)="downloadCSV(monthilyActivityWidgetData, 'CategoryData')"
+        [disabled]="!hasData(monthilyActivityWidgetData)" title="Download CSV">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z" />
+        </svg>
+      </button>
+
+      <ng-container *ngIf="hasMonthlyActivityData(); else noActivity">
+        <canvas id="activityChart"></canvas>
+      </ng-container>
+
+      <ng-template #noActivity>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
     </div>
 
     <div class="chart-card small-chart popular-card">

@@ -10,7 +10,7 @@
 
   <!-- Filters -->
   <div class="filters">
-    <input type="text" placeholder="Search by title or author..." [(ngModel)]="searchTerm" (input)="onSearchChange()" />
+    <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearchChange()" />
 
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>

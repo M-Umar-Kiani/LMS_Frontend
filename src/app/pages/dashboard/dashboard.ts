@@ -6,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { PopularBook } from '../../models/Book.model';
 import { TooltipPipe } from '../../custom-pipes/tooltip-pipe';
 import { forkJoin } from 'rxjs';
+import { ExcelService } from '../../services/excel.service';
+import { CoreService } from '../../services/core.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +45,12 @@ export class Dashboard implements OnInit {
   startDate: string = '';
   endDate: string = '';
 
-  constructor(private zone: NgZone, private widgetService: WidgetService) {}
+  constructor(
+    private zone: NgZone,
+    private widgetService: WidgetService,
+    private excelService: ExcelService,
+    private _coreService: CoreService
+  ) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
@@ -370,5 +378,103 @@ export class Dashboard implements OnInit {
         options: { plugins: { legend: { display: false } } },
       });
     }
+  }
+
+  // Check if dataset has valid data
+  hasData(widgetData: {
+    bookCount: number[];
+    categoryName?: string[];
+    departmentName?: string[];
+  }): boolean {
+    return widgetData?.bookCount?.some((v) => v > 0) ?? false;
+  }
+
+  // Generic CSV download function
+  downloadCSV(widgetData: any, filename: string) {
+    if (!this.hasData(widgetData)) {
+      alert('No data to download!');
+      return;
+    }
+
+    let rows: any[] = [];
+
+    // Detect type of widget to create proper CSV
+    if (widgetData.categoryName) {
+      rows = widgetData.categoryName.map((name: string, index: number) => ({
+        Category: name,
+        Books: widgetData.bookCount[index],
+      }));
+    } else if (widgetData.departmentName) {
+      rows = widgetData.departmentName.map((name: string, index: number) => ({
+        Department: name,
+        Books: widgetData.bookCount[index],
+      }));
+    } else if (widgetData.monthName) {
+      rows = widgetData.monthName.map((month: string, index: number) => ({
+        Month: month,
+        Books: widgetData.bookCount[index],
+      }));
+    } else if (widgetData.length) {
+      // For Popular Books
+      rows = widgetData.map((b: any) => ({
+        Rank: b.rank,
+        Title: b.title,
+        Author: b.author,
+        Department: b.dept,
+        Downloads: b.download,
+      }));
+    }
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [Object.keys(rows[0]).join(',')]
+        .concat(rows.map((r) => Object.values(r).join(',')))
+        .join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `${filename}_${new Date().toISOString()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  hasMonthlyActivityData(): boolean {
+    const data = this.monthilyActivityWidgetData?.bookCount;
+    return Array.isArray(data) && data.some((v) => v > 0);
+  }
+
+  // Download Excel Report
+  downloadCategoryReportExcel() {
+    if (!this.startDate || !this.endDate) {
+      return;
+    }
+    this.excelService.downloadDepartmentReportExcel(this.startDate, this.endDate).subscribe({
+      next: (blob: Blob) => {
+        saveAs(blob, `CategoryReport_${this.startDate}_to_${this.endDate}.xlsx`);
+        this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
+      },
+      error: (err) => {
+        console.error(err);
+        this._coreService.openSnackBar('Failed to export file', 'Ok');
+      },
+    });
+  }
+
+  downloadDepartmentReportExcel() {
+    if (!this.startDate || !this.endDate) {
+      return;
+    }
+    this.excelService.downloadCategoryReportExcel(this.startDate, this.endDate).subscribe({
+      next: (blob: Blob) => {
+        saveAs(blob, `DepartmentReport_${this.startDate}_to_${this.endDate}.xlsx`);
+        this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
+      },
+      error: (err) => {
+        console.error(err);
+        this._coreService.openSnackBar('Failed to export file', 'Ok');
+      },
+    });
   }
 }

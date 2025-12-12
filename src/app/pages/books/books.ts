@@ -19,7 +19,7 @@ import { MatIcon } from '@angular/material/icon';
 @Component({
   selector: 'app-books',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, MatSnackBarModule, MatIcon],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './books.html',
   styleUrls: ['./books.css'],
 })
@@ -38,7 +38,7 @@ export class BooksComponent implements OnInit {
 
   // Pagination
   pageNumber = 1;
-  pageSize = 30;
+  pageSize = 10;
   totalItems = 0;
 
   constructor(

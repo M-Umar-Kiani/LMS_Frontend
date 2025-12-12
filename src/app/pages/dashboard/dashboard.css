@@ -221,3 +221,39 @@
   visibility: visible;
   opacity: 1;
 }
+
+.chart-card {
+  position: relative; /* Important for absolute positioning */
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Top-right Download Button */
+.card-download-btn {
+  position: absolute; /* Position relative to card */
+  top: 12px;
+  right: 12px;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.card-download-btn:hover {
+  background-color: #2563eb;
+  transform: scale(1.1);
+}
+
+.card-download-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
