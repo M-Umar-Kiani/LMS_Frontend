@@ -9,13 +9,14 @@ import { forkJoin } from 'rxjs';
 import { ExcelService } from '../../services/excel.service';
 import { CoreService } from '../../services/core.service';
 import { saveAs } from 'file-saver';
+import { Loader } from '../../global/loader/loader';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
-  imports: [CommonModule, FormsModule, TooltipPipe],
+  imports: [CommonModule, FormsModule, TooltipPipe, Loader],
 })
 export class Dashboard implements OnInit {
   categoryChart: Chart | null = null;
@@ -44,6 +45,7 @@ export class Dashboard implements OnInit {
   selectedRange: string = 'monthToDate'; // default selected
   startDate: string = '';
   endDate: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private zone: NgZone,
@@ -63,7 +65,8 @@ export class Dashboard implements OnInit {
 
       this.startDate = firstDay.toISOString().split('T')[0];
       this.endDate = today.toISOString().split('T')[0];
-      this.onRangeChange();
+      this.isLoading = true;
+      this.refreshDashboard();
     }
   }
 
@@ -93,7 +96,7 @@ export class Dashboard implements OnInit {
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(end);
     }
-
+    this.isLoading = true;
     this.refreshDashboard();
   }
 
@@ -106,6 +109,7 @@ export class Dashboard implements OnInit {
 
   onCustomDateChange() {
     if (this.startDate && this.endDate) {
+      this.isLoading = true;
       this.refreshDashboard();
     }
   }
@@ -135,12 +139,13 @@ export class Dashboard implements OnInit {
         }));
 
         this.monthilyActivityWidgetData = res.monthlyActivity;
-
-        // Now all data is ready, create charts
-        this.createCharts();
+        setTimeout(() => {
+          this.createCharts();
+          this.isLoading = false;
+        }, 1000);
       },
       error: (err) => {
-        console.error(err);
+        this.isLoading = false;
       },
     });
   }
@@ -366,7 +371,7 @@ export class Dashboard implements OnInit {
           labels: this.monthilyActivityWidgetData.monthName,
           datasets: [
             {
-              label: 'Borrows',
+              label: 'Upload(s)',
               data: this.monthilyActivityWidgetData.bookCount,
               borderColor: '#3b82f6',
               backgroundColor: 'rgba(59,130,246,0.2)',
@@ -378,6 +383,7 @@ export class Dashboard implements OnInit {
         options: { plugins: { legend: { display: false } } },
       });
     }
+    this.isLoading = false;
   }
 
   // Check if dataset has valid data
@@ -447,6 +453,7 @@ export class Dashboard implements OnInit {
 
   // Download Excel Report
   downloadCategoryReportExcel() {
+    this.isLoading = true;
     if (!this.startDate || !this.endDate) {
       return;
     }
@@ -454,8 +461,10 @@ export class Dashboard implements OnInit {
       next: (blob: Blob) => {
         saveAs(blob, `CategoryReport_${this.startDate}_to_${this.endDate}.xlsx`);
         this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
+        this.isLoading = false;
       },
       error: (err) => {
+        this.isLoading = false;
         console.error(err);
         this._coreService.openSnackBar('Failed to export file', 'Ok');
       },
@@ -463,6 +472,7 @@ export class Dashboard implements OnInit {
   }
 
   downloadDepartmentReportExcel() {
+    this.isLoading = true;
     if (!this.startDate || !this.endDate) {
       return;
     }
@@ -470,8 +480,10 @@ export class Dashboard implements OnInit {
       next: (blob: Blob) => {
         saveAs(blob, `DepartmentReport_${this.startDate}_to_${this.endDate}.xlsx`);
         this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
+        this.isLoading = false;
       },
       error: (err) => {
+        this.isLoading = true;
         console.error(err);
         this._coreService.openSnackBar('Failed to export file', 'Ok');
       },

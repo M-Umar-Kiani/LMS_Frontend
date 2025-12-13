@@ -15,11 +15,12 @@ import { DownloadResponseDto } from '../../models/Book.model';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CoreService } from '../../services/core.service';
 import { MatIcon } from '@angular/material/icon';
+import { Loader } from '../../global/loader/loader';
 
 @Component({
   selector: 'app-books',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatSnackBarModule, Loader],
   templateUrl: './books.html',
   styleUrls: ['./books.css'],
 })
@@ -35,6 +36,8 @@ export class BooksComponent implements OnInit {
   bookForm!: FormGroup;
   searchTerm: string = '';
   private searchSubject = new Subject<string>();
+
+  isLoading: boolean = false;
 
   // Pagination
   pageNumber = 1;
@@ -70,6 +73,7 @@ export class BooksComponent implements OnInit {
   }
 
   getBooks(searchTerm: string = this.searchTerm): void {
+    this.isLoading = true;
     var payload = {
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,
@@ -85,8 +89,11 @@ export class BooksComponent implements OnInit {
           imageUrl: b.imageUrl || 'assets/default-book.png',
         }));
         this.totalItems = res.totalCount ?? this.books.length;
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error fetching books:', err),
+      error: (err) => {
+        this.isLoading = false;
+      },
     });
   }
 
