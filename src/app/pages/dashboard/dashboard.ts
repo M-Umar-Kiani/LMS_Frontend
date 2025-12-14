@@ -77,27 +77,38 @@ export class Dashboard implements OnInit {
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
       this.startDate = this.formatDate(firstDay); // local 1st of month
       this.endDate = this.formatDate(today); // local today
+      this.isLoading = true;
+      this.refreshDashboard();
     } else if (this.selectedRange === 'lastMonth') {
       const start = new Date(today.getFullYear(), today.getMonth() - 1, 1); // 1st day of last month
       const end = new Date(today.getFullYear(), today.getMonth(), 0); // last day of last month
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(end);
+      this.isLoading = true;
+      this.refreshDashboard();
     } else if (this.selectedRange === 'lastThreeMonths') {
       const start = new Date(today.getFullYear(), today.getMonth() - 3, 1);
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(today);
+      this.isLoading = true;
+      this.refreshDashboard();
     } else if (this.selectedRange === 'thisYear') {
       const start = new Date(today.getFullYear(), 0, 1);
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(today);
+      this.isLoading = true;
+      this.refreshDashboard();
     } else if (this.selectedRange === 'lastYear') {
       const start = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 of last year
       const end = new Date(today.getFullYear() - 1, 11, 31); // Dec 31 of last year
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(end);
+      this.isLoading = true;
+      this.refreshDashboard();
+    } else if (this.selectedRange === 'custom') {
+      this.startDate = '';
+      this.endDate = '';
     }
-    this.isLoading = true;
-    this.refreshDashboard();
   }
 
   formatDate(date: Date): string {

@@ -6,10 +6,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class CoreService {
   constructor(private _snackBar: MatSnackBar) {}
-  openSnackBar(message: string, action: string) {
+  openSnackBar(message: string, action: string = 'Ok', type: 'success' | 'error' = 'success') {
     this._snackBar.open(message, action, {
-      duration: 1000,
+      duration: 3000,
       verticalPosition: 'top',
+      horizontalPosition: 'right', // ✅ TOP RIGHT
+      panelClass: type === 'success' ? ['snack-success'] : ['snack-error'],
     });
   }
 }

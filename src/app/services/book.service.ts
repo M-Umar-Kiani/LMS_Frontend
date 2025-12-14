@@ -26,12 +26,8 @@ export class BookService {
     return this.http.get(`${this.apiUrl}/delete-book/${documentId}`);
   }
 
-  bulkUpload(files: File[]): Observable<any> {
-    const formData = new FormData();
-    for (let file of files) {
-      formData.append('files', file);
-    }
-    return this.http.post(`${this.apiUrl}/bulk`, formData);
+  bulkUpload(request: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/bulk`, request);
   }
 
   downloadDocument(documentId: number): Observable<DownloadResponseDto> {

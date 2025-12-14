@@ -1,17 +1,10 @@
 <div class="bulk-upload-container">
+  <app-loader [isLoading]="isLoading"></app-loader>
   <h2>Bulk Upload</h2>
   <p>Upload multiple PDF files at once</p>
 
   <!-- Default Settings -->
   <div class="default-settings">
-    <div class="form-group">
-      <label>Default Category</label>
-      <select [(ngModel)]="selectedCategory">
-        <option>Book</option>
-        <option>Magazine</option>
-        <option>Article</option>
-      </select>
-    </div>
     <div class="form-group">
       <label>Default Department</label>
       <select [(ngModel)]="selectedDepartment">
@@ -24,14 +17,7 @@
 
   <!-- File Upload Section -->
   <div class="upload-box" (click)="fileInput.click()">
-    <input
-      type="file"
-      #fileInput
-      multiple
-      accept="application/pdf"
-      (change)="onFileSelected($event)"
-      hidden
-    />
+    <input type="file" #fileInput multiple accept="application/pdf" (change)="onFileSelected($event)" hidden />
     <div class="upload-area">
       <span class="upload-icon">⬆️</span>
       <p><strong>Upload PDF Files</strong></p>

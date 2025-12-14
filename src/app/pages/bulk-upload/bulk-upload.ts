@@ -2,22 +2,25 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../services/book.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { Loader } from '../../global/loader/loader';
+import { CoreService } from '../../services/core.service';
 
 @Component({
   selector: 'app-bulk-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSnackBarModule, Loader],
   templateUrl: './bulk-upload.html',
-  styleUrls: ['./bulk-upload.css']
+  styleUrls: ['./bulk-upload.css'],
 })
 export class BulkUpload {
-  selectedCategory = 'Book';
   selectedDepartment = 'Computer Science';
   files: any[] = [];
   isUploading = false;
   uploadResult: any = null;
+  isLoading: boolean = false;
 
-  constructor(private bookService: BookService) {}
+  constructor(private bookService: BookService, private _coreService: CoreService) {}
 
   // Handle file selection
   onFileSelected(event: any) {
@@ -27,7 +30,7 @@ export class BulkUpload {
       this.files.push({
         name: file.name,
         size: (file.size / (1024 * 1024)).toFixed(2), // Convert bytes to MB
-        file: file
+        file: file,
       });
     }
   }
@@ -42,29 +45,34 @@ export class BulkUpload {
     this.files = [];
   }
 
-  // ✅ Upload all files to backend
   uploadAll() {
     if (this.files.length === 0) {
       alert('⚠️ No files selected!');
       return;
     }
 
-    const fileArray = this.files.map(f => f.file);
+    const formData = new FormData();
+    formData.append('Department', this.selectedDepartment);
+    this.files.forEach((f) => {
+      formData.append('files', f.file);
+    });
+
+    this.isLoading = true;
     this.isUploading = true;
 
-    this.bookService.bulkUpload(fileArray).subscribe({
+    this.bookService.bulkUpload(formData).subscribe({
       next: (res) => {
-        console.log('Upload successful:', res);
+        this._coreService.openSnackBar('Files uploaded successfully!', 'Ok', 'success');
         this.uploadResult = res;
-        alert('✅ Files uploaded successfully!');
         this.files = [];
         this.isUploading = false;
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('❌ Upload failed:', err);
-        alert('❌ Upload failed. Check console for details.');
+        this._coreService.openSnackBar('File upload failed!', 'Close', 'error');
         this.isUploading = false;
-      }
+        this.isLoading = false;
+      },
     });
   }
 }

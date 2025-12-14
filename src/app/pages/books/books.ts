@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -10,11 +9,9 @@ import {
 } from '@angular/forms';
 import { BookService } from '../../services/book.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { DownloadResponseDto } from '../../models/Book.model';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CoreService } from '../../services/core.service';
-import { MatIcon } from '@angular/material/icon';
 import { Loader } from '../../global/loader/loader';
 
 @Component({
@@ -44,11 +41,7 @@ export class BooksComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
 
-  constructor(
-    private bookService: BookService,
-    private http: HttpClient,
-    private _coreService: CoreService
-  ) {}
+  constructor(private bookService: BookService, private _coreService: CoreService) {}
 
   ngOnInit(): void {
     this.bookForm = new FormGroup({
@@ -135,7 +128,7 @@ export class BooksComponent implements OnInit {
       this.bookForm.markAllAsTouched();
       return;
     }
-
+    this.isLoading = true;
     const formData = new FormData();
     formData.append('title', this.bookForm.get('bookTitle')?.value);
     formData.append('author', this.bookForm.get('author')?.value);
@@ -146,12 +139,14 @@ export class BooksComponent implements OnInit {
 
     this.bookService.addBook(formData).subscribe({
       next: () => {
-        // alert('✅ Book added successfully!');
+        this.isLoading = false;
         this._coreService.openSnackBar('Book added successfully!', 'Ok');
         this.closeModal();
         this.getBooks();
       },
-      error: (err: any) => console.error('Add Book error:', err),
+      error: (err: any) => {
+        this.isLoading = false;
+      },
     });
   }
 
@@ -160,7 +155,7 @@ export class BooksComponent implements OnInit {
       this.bookForm.markAllAsTouched();
       return;
     }
-
+    this.isLoading = true;
     const formData = new FormData();
     formData.append('documentId', this.bookForm.get('documentId')?.value);
     formData.append('title', this.bookForm.get('bookTitle')?.value);
@@ -171,23 +166,31 @@ export class BooksComponent implements OnInit {
 
     this.bookService.editBook(formData).subscribe({
       next: () => {
-        alert('✅ Book updated successfully!');
+        this.isLoading = false;
+        this._coreService.openSnackBar('File uploaded successfully!', 'Ok', 'success');
         this.closeModal();
         this.getBooks();
       },
-      error: (err: any) => console.error('Update Book error:', err),
+      error: (err: any) => {
+        this.isLoading = false;
+        this._coreService.openSnackBar('File uploaded failed!', 'Close', 'error');
+      },
     });
   }
 
   deleteBook(documentId: number) {
+    this.isLoading = true;
+
     this.bookService.deleteBook(documentId).subscribe({
       next: () => {
-        // alert('✅ Book Deleted successfully!');
-        this._coreService.openSnackBar('Book Deleted successfully!', 'Ok');
-
+        this.isLoading = false;
+        this._coreService.openSnackBar('Book Deleted successfully!', 'Ok', 'success');
         this.getBooks();
       },
-      error: (err: any) => console.error('Delete Book error:', err),
+      error: (err: any) => {
+        this.isLoading = false;
+        this._coreService.openSnackBar('Error occurred while deleting.', 'Close', 'error');
+      },
     });
   }
 
