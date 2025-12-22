@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { BookService } from '../../../services/book.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterModule } from '@angular/router';
+import { UserTopbar } from '../user-topbar/user-topbar';
 
 @Component({
   selector: 'app-browse-books',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule, UserTopbar],
   templateUrl: './browse-books.html',
   styleUrls: ['./browse-books.css'],
 })
@@ -42,7 +44,6 @@ export class BrowseBooks {
 
   // Get Paginated books
   getBooks(searchTerm: string = this.searchTerm): void {
-    debugger;
     var payload = {
       pageNumber: this.pageNumber,
       pageSize: this.pageSize,

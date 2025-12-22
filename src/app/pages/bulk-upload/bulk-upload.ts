@@ -29,7 +29,7 @@ export class BulkUpload {
       const file = selectedFiles[i];
       this.files.push({
         name: file.name,
-        size: (file.size / (1024 * 1024)).toFixed(2), // Convert bytes to MB
+        size: (file.size / (1024 * 1024)).toFixed(2),
         file: file,
       });
     }
@@ -47,7 +47,7 @@ export class BulkUpload {
 
   uploadAll() {
     if (this.files.length === 0) {
-      alert('⚠️ No files selected!');
+      alert('No files selected');
       return;
     }
 
@@ -58,21 +58,27 @@ export class BulkUpload {
     });
 
     this.isLoading = true;
-    this.isUploading = true;
 
     this.bookService.bulkUpload(formData).subscribe({
-      next: (res) => {
-        this._coreService.openSnackBar('Files uploaded successfully!', 'Ok', 'success');
-        this.uploadResult = res;
+      next: (blob) => {
+        this.downloadFile(blob);
+        this._coreService.openSnackBar('Upload completed', 'Ok', 'success');
         this.files = [];
-        this.isUploading = false;
         this.isLoading = false;
       },
-      error: (err) => {
-        this._coreService.openSnackBar('File upload failed!', 'Close', 'error');
-        this.isUploading = false;
+      error: () => {
+        this._coreService.openSnackBar('Upload failed', 'Close', 'error');
         this.isLoading = false;
       },
     });
+  }
+
+  downloadFile(blob: Blob) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'BulkUploadReport.txt';
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }

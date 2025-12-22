@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart } from 'chart.js/auto';
+import { UserTopbar } from '../user-topbar/user-topbar';
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UserTopbar],
   templateUrl: './user-dashboard.html',
   styleUrls: ['./user-dashboard.css'],
 })

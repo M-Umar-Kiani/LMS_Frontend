@@ -26,8 +26,10 @@ export class BookService {
     return this.http.get(`${this.apiUrl}/delete-book/${documentId}`);
   }
 
-  bulkUpload(request: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/bulk`, request);
+  bulkUpload(request: FormData) {
+    return this.http.post(`${this.apiUrl}/bulk`, request, {
+      responseType: 'blob', // IMPORTANT
+    });
   }
 
   downloadDocument(documentId: number): Observable<DownloadResponseDto> {

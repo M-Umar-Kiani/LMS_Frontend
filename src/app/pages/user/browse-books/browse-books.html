@@ -1,24 +1,4 @@
-<nav class="navbar">
-  <div class="logo">
-    <h2>📘 Digital Library</h2>
-    <p>Student Portal</p>
-  </div>
-
-  <ul class="nav-links">
-    <li routerLink="/user/dashboard" routerLinkActive="active">Home</li>
-    <li class="active">Browse Books</li>
-    <li>My Books</li>
-    <li>Profile</li>
-  </ul>
-
-  <div class="profile">
-    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
-    <div>
-      <strong>John Smith</strong><br />
-      <small>Computer Science</small>
-    </div>
-  </div>
-</nav>
+<app-user-topbar></app-user-topbar>
 
 <div class="browse-container">
   <!-- Filters -->
@@ -55,7 +35,6 @@
         <tr *ngFor="let book of books">
           <td>
             <div class="book-info">
-              <img src="https://via.placeholder.com/40" alt="book" />
               <div>
                 <strong>{{ limitWords(book.title, 8) }}</strong><br />
                 <small>by {{ limitWords(book.author, 5) }}</small><br />
@@ -79,38 +58,5 @@
       <span>Page {{ pageNumber }}</span>
       <button (click)="nextPage()" [disabled]="books.length < pageSize">Next ➡</button>
     </div>
-    <!-- <table>
-      <thead>
-        <tr>
-          <th>Book Details</th>
-          <th>Category</th>
-          <th>Department</th>
-          <th>Year</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let book of books">
-          <td>
-            <div class="book-info">
-              <img [src]="book.image" alt="book" />
-              <div>
-                <strong>{{ book.title }}</strong><br />
-                <small>by {{ book.author }}</small><br />
-                <small>ISBN: {{ book.isbn }}</small>
-              </div>
-            </div>
-          </td>
-          <td><span class="badge blue">{{ book.category }}</span></td>
-          <td>{{ book.department }}</td>
-          <td>{{ book.year }}</td>
-          <td>
-            <button class="icon-btn">
-              ⬇️
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
   </div>
 </div>
