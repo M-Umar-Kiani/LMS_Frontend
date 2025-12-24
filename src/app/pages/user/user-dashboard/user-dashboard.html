@@ -4,14 +4,6 @@
 <div class="user-dashboard">
   <!-- Stats Cards -->
   <div class="stats-grid">
-    <div class="card">
-      <div class="icon">📘</div>
-      <div>
-        <h3>8</h3>
-        <p>Total Books 2</p>
-        <small>+12% this month</small>
-      </div>
-    </div>
 
     <div class="card green">
       <div class="icon">📗</div>
@@ -19,15 +11,6 @@
         <h3>7</h3>
         <p>Available Books</p>
         <small>Ready to borrow</small>
-      </div>
-    </div>
-
-    <div class="card orange">
-      <div class="icon">⏰</div>
-      <div>
-        <h3>1</h3>
-        <p>Currently Borrowed</p>
-        <small>Your active books</small>
       </div>
     </div>
 
@@ -56,22 +39,4 @@
     </div>
   </div>
 
-  <!-- Latest Books -->
-  <div class="latest-books">
-    <h3>Latest Books</h3>
-    <p>Recently added to our collection</p>
-    <div class="book-carousel">
-      <div class="book-card" *ngFor="let book of latestBooks">
-        <img [src]="book.image" alt="book" />
-        <div class="info">
-          <h4>{{ book.title }}</h4>
-          <p>{{ book.author }}</p>
-          <div class="footer">
-            <small>{{ book.year }}</small>
-            <span class="badge">{{ book.category }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

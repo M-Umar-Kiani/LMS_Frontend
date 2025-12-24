@@ -114,7 +114,7 @@
 /* Header container */
 .dashboard-header {
   display: flex;
-  justify-content: space-between; /* left side + right side */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
 }
@@ -222,17 +222,9 @@
   opacity: 1;
 }
 
-.chart-card {
-  position: relative; /* Important for absolute positioning */
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 /* Top-right Download Button */
 .card-download-btn {
-  position: absolute; /* Position relative to card */
+  position: absolute;
   top: 12px;
   right: 12px;
   background-color: #3b82f6;

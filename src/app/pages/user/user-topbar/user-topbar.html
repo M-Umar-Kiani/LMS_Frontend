@@ -6,8 +6,13 @@
     </div>
 
     <ul class="nav-links">
-        <li class="active">Home</li>
-        <li>Browse Books</li>
+        <li routerLink="/user/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Home
+        </li>
+
+        <li routerLink="/user/browse-books" routerLinkActive="active">
+            Browse Books
+        </li>
     </ul>
 
     <div class="profile">
