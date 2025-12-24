@@ -12,7 +12,6 @@ import { UserTopbar } from '../user-topbar/user-topbar';
 })
 export class UserDashboard {
   ngAfterViewInit(): void {
-    // Department-wise Bar Chart
     new Chart('deptChart', {
       type: 'bar',
       data: {
@@ -32,7 +31,6 @@ export class UserDashboard {
       },
     });
 
-    // Category-wise Pie Chart
     new Chart('categoryChart', {
       type: 'pie',
       data: {
@@ -50,35 +48,4 @@ export class UserDashboard {
       },
     });
   }
-
-  latestBooks = [
-    {
-      title: 'Machine Learning Research',
-      author: 'Dr. Sarah Johnson',
-      year: 2024,
-      category: 'Article',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995',
-    },
-    {
-      title: 'Psychology Today',
-      author: 'Various Authors',
-      year: 2024,
-      category: 'Magazine',
-      image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0ea',
-    },
-    {
-      title: 'Social Psychology',
-      author: 'David G. Myers',
-      year: 2023,
-      category: 'Book',
-      image: 'https://images.unsplash.com/photo-1581091012184-7af8c6cda3b2',
-    },
-    {
-      title: 'Strategic Management',
-      author: 'Fred R. David',
-      year: 2023,
-      category: 'Book',
-      image: 'https://images.unsplash.com/photo-1544006659-f0b21884ce1d',
-    },
-  ];
 }

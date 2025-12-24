@@ -75,13 +75,13 @@ export class Dashboard implements OnInit {
 
     if (this.selectedRange === 'monthToDate') {
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-      this.startDate = this.formatDate(firstDay); // local 1st of month
-      this.endDate = this.formatDate(today); // local today
+      this.startDate = this.formatDate(firstDay);
+      this.endDate = this.formatDate(today);
       this.isLoading = true;
       this.refreshDashboard();
     } else if (this.selectedRange === 'lastMonth') {
-      const start = new Date(today.getFullYear(), today.getMonth() - 1, 1); // 1st day of last month
-      const end = new Date(today.getFullYear(), today.getMonth(), 0); // last day of last month
+      const start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const end = new Date(today.getFullYear(), today.getMonth(), 0);
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(end);
       this.isLoading = true;
@@ -99,8 +99,8 @@ export class Dashboard implements OnInit {
       this.isLoading = true;
       this.refreshDashboard();
     } else if (this.selectedRange === 'lastYear') {
-      const start = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 of last year
-      const end = new Date(today.getFullYear() - 1, 11, 31); // Dec 31 of last year
+      const start = new Date(today.getFullYear() - 1, 0, 1);
+      const end = new Date(today.getFullYear() - 1, 11, 31);
       this.startDate = this.formatDate(start);
       this.endDate = this.formatDate(end);
       this.isLoading = true;
@@ -113,7 +113,7 @@ export class Dashboard implements OnInit {
 
   formatDate(date: Date): string {
     const yyyy = date.getFullYear();
-    const mm = ('0' + (date.getMonth() + 1)).slice(-2); // Months are 0-based
+    const mm = ('0' + (date.getMonth() + 1)).slice(-2);
     const dd = ('0' + date.getDate()).slice(-2);
     return `${yyyy}-${mm}-${dd}`;
   }
@@ -178,10 +178,6 @@ export class Dashboard implements OnInit {
   }
 
   GetDownloadedBooksCount() {
-    const datePayload = {
-      startDate: this.startDate,
-      endDate: this.endDate,
-    };
     this.widgetService.GetDownloadedBooksCount(this.datePayload).subscribe({
       next: (resp: any) => {
         this.downloadedBooksCount = resp.bookCount;
@@ -191,10 +187,6 @@ export class Dashboard implements OnInit {
   }
 
   getCategoryWidgetData() {
-    const datePayload = {
-      startDate: this.startDate,
-      endDate: this.endDate,
-    };
     this.widgetService.GetBookByCategoryWidget(this.datePayload).subscribe({
       next: (resp: CategoryWidgetDto) => {
         this.categoryWidgetData = resp;
@@ -253,7 +245,7 @@ export class Dashboard implements OnInit {
         this.categoryChart.destroy();
       }
       const colors = this.categoryWidgetData.categoryName.map(
-        () => '#' + Math.floor(Math.random() * 16777215).toString(16) // generates random hex colors
+        () => '#' + Math.floor(Math.random() * 16777215).toString(16)
       );
 
       this.categoryChart = new Chart(categoryCanvas, {
@@ -273,7 +265,7 @@ export class Dashboard implements OnInit {
           responsive: true,
           maintainAspectRatio: false,
           layout: {
-            padding: 70,
+            padding: 40,
           },
           plugins: {
             legend: {
@@ -283,7 +275,7 @@ export class Dashboard implements OnInit {
                 boxWidth: 100,
                 color: '#111827',
                 font: {
-                  size: 13,
+                  size: 16,
                   family: 'Inter',
                 },
               },
@@ -311,7 +303,6 @@ export class Dashboard implements OnInit {
               ctx.fillStyle = '#111827';
               ctx.textAlign = 'center';
               ctx.textBaseline = 'middle';
-              ctx.fillText('8', width / 2.3, height / 2.1);
               ctx.restore();
             },
           },
@@ -397,16 +388,11 @@ export class Dashboard implements OnInit {
     this.isLoading = false;
   }
 
-  // Check if dataset has valid data
-  hasData(widgetData: {
-    bookCount: number[];
-    categoryName?: string[];
-    departmentName?: string[];
-  }): boolean {
-    return widgetData?.bookCount?.some((v) => v > 0) ?? false;
+  hasData(widgetData: any): boolean {
+    const data = widgetData?.bookCount;
+    return Array.isArray(data) && data.length > 0;
   }
 
-  // Generic CSV download function
   downloadCSV(widgetData: any, filename: string) {
     if (!this.hasData(widgetData)) {
       alert('No data to download!');
@@ -415,7 +401,6 @@ export class Dashboard implements OnInit {
 
     let rows: any[] = [];
 
-    // Detect type of widget to create proper CSV
     if (widgetData.categoryName) {
       rows = widgetData.categoryName.map((name: string, index: number) => ({
         Category: name,

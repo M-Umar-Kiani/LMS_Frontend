@@ -227,16 +227,31 @@
   position: absolute;
   top: 12px;
   right: 12px;
+
+  width: 36px;
+  height: 36px;
+
   background-color: #3b82f6;
   border: none;
   border-radius: 50%;
-  padding: 8px;
+
   cursor: pointer;
   color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 0; /* ❗ important */
+
   transition: all 0.2s ease-in-out;
+}
+
+.card-download-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
 }
 
 .card-download-btn:hover {
@@ -248,4 +263,8 @@
   background-color: #94a3b8;
   cursor: not-allowed;
   transform: none;
+}
+
+.chart-card {
+  position: relative;
 }
