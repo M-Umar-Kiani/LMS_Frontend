@@ -1,16 +1,47 @@
 <app-user-topbar></app-user-topbar>
+<app-loader [isLoading]="isLoading"></app-loader>
 
 <!-- Main Container -->
 <div class="user-dashboard">
+
+  <div class="dashboard-header">
+    <!-- Left Side -->
+    <div class="header-left">
+      <h2>Dashboard</h2>
+      <br>
+      <p>Overview of your library management system</p>
+    </div>
+
+    <!-- Right Side — Date Filter -->
+    <div class="header-right">
+      <div class="date-filter-wrapper">
+        <select class="date-filter-select" [(ngModel)]="selectedRange" (change)="onRangeChange()">
+          <option value="monthToDate">Month to Date</option>
+          <option value="lastMonth">Last Month</option>
+          <option value="lastThreeMonths">Last 3 Months</option>
+          <option value="thisYear">This Year</option>
+          <option value="lastYear">Last Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+
+        <div class="date-range-box" *ngIf="selectedRange === 'custom'">
+          <input type="date" [(ngModel)]="startDate" (change)="onCustomDateChange()" />
+          <span>to</span>
+          <input type="date" [(ngModel)]="endDate" (change)="onCustomDateChange()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Stats Cards -->
   <div class="stats-grid">
 
     <div class="card green">
       <div class="icon">📗</div>
       <div>
-        <h3>7</h3>
+        <h3>{{ bookCount }}</h3>
         <p>Available Books</p>
-        <small>Ready to borrow</small>
+        <small>Ready to download</small>
       </div>
     </div>
 
@@ -18,8 +49,8 @@
       <div class="icon">📈</div>
       <div>
         <h3>1</h3>
-        <p>Books Read</p>
-        <small>Total completed</small>
+        <p>Downloads</p>
+        <small>Download Overview</small>
       </div>
     </div>
   </div>
@@ -29,13 +60,65 @@
     <div class="chart-card">
       <h4>Department-wise Distribution</h4>
       <p>Books available across departments</p>
-      <canvas id="deptChart"></canvas>
+      <ng-container *ngIf="hasData(categoryWidgetData); else noCategory">
+        <canvas id="deptChart"></canvas>
+      </ng-container>
+      <ng-template #noCategory>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
     </div>
 
     <div class="chart-card">
       <h4>Category-wise Books</h4>
       <p>Distribution by book category</p>
-      <canvas id="categoryChart"></canvas>
+      <ng-container *ngIf="departmentWidgetData != null && departmentWidgetData.bookCount.length > 0; else noDept">
+        <canvas id="categoryChart"></canvas>
+      </ng-container>
+      <ng-template #noDept>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
+    </div>
+
+    <div class="chart-card small-chart popular-card full-width">
+      <h3>Top Rated Books</h3>
+      <table class="excel-table" *ngIf="popularBooks && popularBooks.length > 0; else noData">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Book</th>
+            <th>Author</th>
+            <th>Department</th>
+            <th>Borrows</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of popularBooks">
+            <td>{{ b.rank }}</td>
+
+            <td class="table-tooltip" [title]="b.title">
+              {{ b.title | tooltip:50 }}
+              <span class="table-tooltiptext" *ngIf="(b?.title?.length ?? 0) > 50">{{ b.title }}</span>
+            </td>
+
+            <td class="table-tooltip" [title]="b.author">
+              {{ b.author | tooltip:50 }}
+              <span class="table-tooltiptext" *ngIf="(b?.author?.length ?? 0) > 50">{{ b.author }}</span>
+            </td>
+
+            <td class="table-tooltip" [title]="b.dept">
+              {{ b.dept | tooltip:50 }}
+              <span class="table-tooltiptext" *ngIf="(b?.dept?.length ?? 0) > 50">{{ b.dept }}</span>
+            </td>
+
+            <td><span class="badge green">{{ b.download }} times</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Template to show if no data -->
+      <ng-template #noData>
+        <div class="no-data">No Data to Display</div>
+      </ng-template>
     </div>
   </div>
 </div>

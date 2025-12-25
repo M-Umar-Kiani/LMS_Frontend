@@ -42,7 +42,7 @@ export class Dashboard implements OnInit {
   bookCount: number = 0;
   downloadedBooksCount: number = 0;
 
-  selectedRange: string = 'monthToDate'; // default selected
+  selectedRange: string = 'monthToDate';
   startDate: string = '';
   endDate: string = '';
   isLoading: boolean = false;
@@ -64,7 +64,7 @@ export class Dashboard implements OnInit {
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
       this.startDate = firstDay.toISOString().split('T')[0];
-      this.endDate = today.toISOString().split('T')[0];
+      this.endDate = this.formatEndDate(today.getFullYear(), today.getMonth(), today.getDate());
       this.isLoading = true;
       this.refreshDashboard();
     }
@@ -167,69 +167,6 @@ export class Dashboard implements OnInit {
       endDate: this.endDate,
     };
   }
-
-  GetTotalBooksCount() {
-    this.widgetService.GetTotalBooksCount(this.datePayload).subscribe({
-      next: (resp: any) => {
-        this.bookCount = resp.bookCount;
-      },
-      error: (err) => {},
-    });
-  }
-
-  GetDownloadedBooksCount() {
-    this.widgetService.GetDownloadedBooksCount(this.datePayload).subscribe({
-      next: (resp: any) => {
-        this.downloadedBooksCount = resp.bookCount;
-      },
-      error: (err) => {},
-    });
-  }
-
-  getCategoryWidgetData() {
-    this.widgetService.GetBookByCategoryWidget(this.datePayload).subscribe({
-      next: (resp: CategoryWidgetDto) => {
-        this.categoryWidgetData = resp;
-      },
-      error: (err) => {},
-    });
-  }
-
-  getDepartmentidgetData() {
-    this.widgetService.GetBookByDepartmentWidget(this.datePayload).subscribe({
-      next: (resp: DepartmentWidgetDto) => {
-        this.departmentWidgetData = resp;
-      },
-      error: (err) => {},
-    });
-  }
-
-  getPopularBooks() {
-    this.widgetService.GetPopularBooks(this.datePayload).subscribe({
-      next: (resp: any[]) => {
-        this.popularBooks = resp.map((book, index) => ({
-          rank: index + 1,
-          title: book.title,
-          author: book.author,
-          dept: book.department,
-          download: book.downloads,
-        }));
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
-  }
-
-  getMonthlyActivityWidget() {
-    this.widgetService.GetMonthlyActivityWidget(this.datePayload).subscribe({
-      next: (resp: MonthilyActivityWidget) => {
-        this.monthilyActivityWidgetData = resp;
-      },
-      error: (err) => {},
-    });
-  }
-
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       setTimeout(() => {
@@ -484,5 +421,9 @@ export class Dashboard implements OnInit {
         this._coreService.openSnackBar('Failed to export file', 'Ok');
       },
     });
+  }
+
+  formatEndDate(year: number, month: number, day: number): string {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 }

@@ -1,14 +1,12 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 <div class="dashboard-container">
   <div class="dashboard-header">
-    <!-- Left Side -->
     <div class="header-left">
       <h2>Dashboard</h2>
       <br>
       <p>Overview of your library management system</p>
     </div>
 
-    <!-- Right Side — Date Filter -->
     <div class="header-right">
       <div class="date-filter-wrapper">
         <select class="date-filter-select" [(ngModel)]="selectedRange" (change)="onRangeChange()">
@@ -29,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Stats Cards -->
   <div class="stats-grid">
     <div class="card total">
       <h3>Total Books</h3>
@@ -41,7 +38,6 @@
     </div>
   </div>
 
-  <!-- Charts -->
   <div class="charts-grid">
     <div class="chart-card small-chart">
       <h3>Category Distribution</h3>
@@ -84,13 +80,6 @@
     <div class="chart-card small-chart">
       <h3>Monthly Activity</h3>
 
-      <button class="card-download-btn" (click)="downloadCSV(monthilyActivityWidgetData, 'CategoryData')"
-        [disabled]="!hasData(monthilyActivityWidgetData)" title="Download CSV">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-          <path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z" />
-        </svg>
-      </button>
-
       <ng-container *ngIf="hasMonthlyActivityData(); else noActivity">
         <canvas id="activityChart"></canvas>
       </ng-container>
@@ -102,7 +91,6 @@
 
     <div class="chart-card small-chart popular-card">
       <h3>Top Rated Books</h3>
-      <!-- Check if there is data -->
       <table class="excel-table" *ngIf="popularBooks && popularBooks.length > 0; else noData">
         <thead>
           <tr>
@@ -117,20 +105,17 @@
           <tr *ngFor="let b of popularBooks">
             <td>{{ b.rank }}</td>
 
-            <!-- Title column -->
-            <td class="table-tooltip">
+            <td class="table-tooltip" [title]="b.title">
               {{ b.title | tooltip:15 }}
               <span class="table-tooltiptext" *ngIf="(b?.title?.length ?? 0) > 15">{{ b.title }}</span>
             </td>
 
-            <!-- Author column -->
-            <td class="table-tooltip">
+            <td class="table-tooltip" [title]="b.author">
               {{ b.author | tooltip:15 }}
               <span class="table-tooltiptext" *ngIf="(b?.author?.length ?? 0) > 15">{{ b.author }}</span>
             </td>
 
-            <!-- Department column -->
-            <td class="table-tooltip">
+            <td class="table-tooltip" [title]="b.dept">
               {{ b.dept | tooltip:15 }}
               <span class="table-tooltiptext" *ngIf="(b?.dept?.length ?? 0) > 15">{{ b.dept }}</span>
             </td>
@@ -140,7 +125,6 @@
         </tbody>
       </table>
 
-      <!-- Template to show if no data -->
       <ng-template #noData>
         <div class="no-data">No Data to Display</div>
       </ng-template>

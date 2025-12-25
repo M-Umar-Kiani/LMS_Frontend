@@ -3,10 +3,6 @@
   font-family: Arial, sans-serif;
 }
 
-.dashboard-header {
-  margin-bottom: 20px;
-}
-
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -104,13 +100,6 @@
   background-color: #fafafa; /* Light shading for alternate rows */
 }
 
-.badge.green {
-  background-color: #4caf50;
-  color: white;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
 /* Header container */
 .dashboard-header {
   display: flex;
@@ -191,7 +180,6 @@
 .table-tooltip {
   position: relative;
   cursor: pointer;
-  overflow: hidden;
   max-width: 150px;
   white-space: nowrap;
   text-overflow: ellipsis;
