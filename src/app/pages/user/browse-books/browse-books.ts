@@ -70,12 +70,12 @@ export class BrowseBooks {
           this._coreService.openSnackBar('Book downloaded successfully!', 'Ok', 'success');
           this.isLoading = false;
         } else {
-          this._coreService.openSnackBar('Failed to download document.', 'False', 'error');
+          this._coreService.openSnackBar('Download failed!', 'Ok', 'error');
           this.isLoading = false;
         }
       },
       error: (err) => {
-        this._coreService.openSnackBar('Failed to download document.', 'False', 'error');
+        this._coreService.openSnackBar('Download failed!', 'Ok', 'error');
         this.isLoading = false;
       },
     });
