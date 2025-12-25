@@ -10,7 +10,7 @@ export class CoreService {
     this._snackBar.open(message, action, {
       duration: 3000,
       verticalPosition: 'top',
-      horizontalPosition: 'right', // ✅ TOP RIGHT
+      horizontalPosition: 'right',
       panelClass: type === 'success' ? ['snack-success'] : ['snack-error'],
     });
   }

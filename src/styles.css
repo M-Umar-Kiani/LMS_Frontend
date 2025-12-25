@@ -9,12 +9,26 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.snack-success {
-  background-color: #4caf50 !important; /* green */
-  color: #fff !important;
+/* SUCCESS */
+.snack-success .mdc-snackbar__surface {
+  background-color: #4caf50 !important; /* Green */
+  color: #ffffff !important;
 }
 
-.snack-error {
-  background-color: #f44336 !important; /* red */
-  color: #fff !important;
+/* ERROR */
+.snack-error .mdc-snackbar__surface {
+  background-color: #f44336 !important; /* Red */
+  color: #ffffff !important;
+}
+
+/* Text color */
+.snack-success .mdc-snackbar__label,
+.snack-error .mdc-snackbar__label {
+  color: #ffffff !important;
+}
+
+/* Action button */
+.snack-success .mdc-snackbar__action,
+.snack-error .mdc-snackbar__action {
+  color: #ffffff !important;
 }

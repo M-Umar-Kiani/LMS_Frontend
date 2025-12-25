@@ -102,3 +102,24 @@ th {
 .icon-btn:hover {
   background: #1e40af;
 }
+
+/* Pagination */
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.pagination button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}

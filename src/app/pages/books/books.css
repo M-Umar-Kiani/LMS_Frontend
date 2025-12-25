@@ -24,17 +24,27 @@
   background: #1e40af;
 }
 
-.filters {
+/* Filters Bar */
+.filters-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 15px;
+  margin-bottom: 25px;
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.filters input,
-.filters select {
-  padding: 8px;
+.filters-bar input,
+.filters-bar select {
+  padding: 10px 14px;
+  border-radius: 8px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+.filters-bar input {
+  flex: 1;
 }
 
 table {

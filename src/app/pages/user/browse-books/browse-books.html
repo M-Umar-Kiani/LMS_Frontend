@@ -1,9 +1,11 @@
 <app-user-topbar></app-user-topbar>
+<app-loader [isLoading]="isLoading"></app-loader>
 
 <div class="browse-container">
   <!-- Filters -->
   <div class="filters-bar">
-    <input type="text" placeholder="Search by Title, Author, or Department..." />
+    <input type="text" placeholder="Search by Title, Author, or Department..." [(ngModel)]="searchTerm"
+      (input)="onSearchChange()" />
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
       <option value="Book">Book</option>
@@ -48,7 +50,7 @@
           <td>{{ book.year }}</td>
 
           <td>
-            <button class="icon-btn">⬇️</button>
+            <button class="icon-btn" (click)="downloadDocument(book.documentId)">⬇️</button>
           </td>
         </tr>
       </tbody>

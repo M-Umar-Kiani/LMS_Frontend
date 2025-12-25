@@ -8,37 +8,15 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-book.html',
-  styleUrls: ['./add-book.css']
+  styleUrls: ['./add-book.css'],
 })
 export class AddBook {
-  newBook = {
-    title: '',
-    author: '',
-    year: new Date().getFullYear(),
-    category: 'Book',
-    department: 'Computer Science',
-    isbn: '',
-    coverUrl: '',
-    description: '',
-    pdf: null as File | null
-  };
-
-  // onFileSelected(event: any) {
-  //   this.newBook.pdf = event.target.files[0];
-  // }
-
-  // addBook() {
-  //   console.log('Book added:', this.newBook);
-  //   // Later → save to backend or local state
-  // }
-
   bookForm!: FormGroup;
   selectedFile: File | null = null;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Manual FormGroup setup (no FormBuilder)
     this.bookForm = new FormGroup({
       title: new FormControl('', Validators.required),
       author: new FormControl('', Validators.required),
@@ -48,7 +26,7 @@ export class AddBook {
       isbn: new FormControl(''),
       coverUrl: new FormControl(''),
       description: new FormControl(''),
-      pdf: new FormControl(null)
+      pdf: new FormControl(null),
     });
   }
 
@@ -73,11 +51,9 @@ export class AddBook {
   // }
 
   addBook(): void {
-    debugger
+    debugger;
     console.log(this.bookForm);
     if (this.bookForm.valid) {
-      console.log('✅ Book Added:', this.bookForm.value);
-      alert('Book added successfully!');
       this.router.navigate(['/books']);
     } else {
       this.bookForm.markAllAsTouched();
