@@ -23,6 +23,7 @@ export class AddBook {
       year: new FormControl(new Date().getFullYear(), [Validators.required, Validators.min(1900)]),
       category: new FormControl('Book', Validators.required),
       department: new FormControl('Computer Science', Validators.required),
+      publisher: new FormControl('', Validators.required),
       isbn: new FormControl(''),
       coverUrl: new FormControl(''),
       description: new FormControl(''),

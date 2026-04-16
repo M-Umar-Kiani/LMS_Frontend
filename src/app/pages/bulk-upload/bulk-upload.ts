@@ -14,13 +14,18 @@ import { CoreService } from '../../services/core.service';
   styleUrls: ['./bulk-upload.css'],
 })
 export class BulkUpload {
-  selectedDepartment = 'Computer Science';
+  selectedDepartment = 'Select';
+  selectedCategory = 'Select';
+
   files: any[] = [];
   isUploading = false;
   uploadResult: any = null;
   isLoading: boolean = false;
 
-  constructor(private bookService: BookService, private _coreService: CoreService) {}
+  constructor(
+    private bookService: BookService,
+    private _coreService: CoreService,
+  ) {}
 
   // Handle file selection
   onFileSelected(event: any) {
@@ -53,6 +58,7 @@ export class BulkUpload {
 
     const formData = new FormData();
     formData.append('Department', this.selectedDepartment);
+    formData.append('Category', this.selectedCategory);
     this.files.forEach((f) => {
       formData.append('files', f.file);
     });

@@ -15,9 +15,12 @@
 
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
-      <option value="Book">Book</option>
-      <option value="Magazine">Magazine</option>
-      <option value="Article">Article</option>
+      <option value="Books">Books</option>
+      <option value="Magazines">Magazines</option>
+      <option value="Articles">Articles</option>
+      <option value="Journals">Journals</option>
+      <option value="Press Clippings">Press Clippings</option>
+      <option value="Faculity Publications">Faculity Publications</option>
     </select>
 
     <select [(ngModel)]="selectedDepartment" (change)="applyFilter()">
@@ -25,6 +28,7 @@
       <option value="Computer Science">Computer Science</option>
       <option value="Management Science">Management Science</option>
       <option value="Social Science">Social Science</option>
+      <option value="Media Science">Media Science</option>
     </select>
   </div>
 
@@ -35,6 +39,7 @@
         <th>Title</th>
         <th>Category</th>
         <th>Department</th>
+        <th>Publisher</th>
         <th>Year</th>
         <th>Actions</th>
       </tr>
@@ -43,6 +48,16 @@
       <tr *ngFor="let book of books">
         <td>
           <div class="book-info">
+            <div class="thumb-wrapper">
+              <img (click)="openImage(book)" *ngIf="book.previewImage; else noImage"
+                [src]="'data:image/png;base64,' + book.previewImage" class="book-thumb" />
+
+              <ng-template #noImage>
+                <div class="no-image">
+                  📄 No Image
+                </div>
+              </ng-template>
+            </div>
             <div>
               <strong>{{ limitWords(book.title, 8) }}</strong>
               <br />
@@ -51,10 +66,11 @@
           </div>
         </td>
         <td>
-          <span class="badge blue">{{ book.category }}</span>
+          <span class="badge blue">{{ book.category ?? 'N/A' }}</span>
         </td>
-        <td>{{ book.department }}</td>
-        <td>{{ book.year }}</td>
+        <td>{{ book.department ?? 'N/A' }}</td>
+        <td>{{ book.publisher ?? 'N/A' }}</td>
+        <td>{{ book.year ?? 'N/A' }}</td>
 
         <td>
           <button class="icon-btn" (click)="downloadDocument(book.documentId)">⬇️</button>
@@ -94,6 +110,12 @@
           <input id="author" type="text" formControlName="author" name="author" required />
         </div>
 
+        <!-- Row 2: Author -->
+        <div class="form-field">
+          <label for="publisher">Publisher *</label>
+          <input id="publisher" type="text" formControlName="publisher" name="publisher" required />
+        </div>
+
         <!-- Row 2: Year -->
         <div class="form-field">
           <label for="year">Year *</label>
@@ -104,9 +126,12 @@
         <div class="form-field">
           <label for="category">Category *</label>
           <select id="category" formControlName="category" name="category">
-            <option>Book</option>
-            <option>Magazine</option>
+            <option>Books</option>
+            <option>Magazines</option>
             <option>Article</option>
+            <option>Journals</option>
+            <option>Press Clippings</option>
+            <option>Faculity Publications</option>
           </select>
         </div>
 
@@ -117,6 +142,7 @@
             <option>Computer Science</option>
             <option>Management Science</option>
             <option>Social Science</option>
+            <option>Media Science</option>
           </select>
         </div>
       </div>
@@ -143,5 +169,14 @@
         <button type="submit" class="save-btn" (click)="editBook()" *ngIf="isEdit">Update</button>
       </div>
     </form>
+  </div>
+</div>
+<div class="image-modal-overlay" *ngIf="showImageModal">
+  <div class="image-modal">
+
+    <button class="close-btn" (click)="closeImageModal()">✖</button>
+
+    <img [src]="selectedImage" class="full-image" />
+
   </div>
 </div>

@@ -6,11 +6,25 @@
   <!-- Default Settings -->
   <div class="default-settings">
     <div class="form-group">
+      <label>Default Category</label>
+      <select [(ngModel)]="selectedCategory">
+        <option>Select</option>
+        <option>Books</option>
+        <option>Magazines</option>
+        <option>Articles</option>
+        <option>Journals</option>
+        <option>Press Clippings</option>
+        <option>Faculity Publications</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label>Default Department</label>
       <select [(ngModel)]="selectedDepartment">
+        <option>Select</option>
         <option>Computer Science</option>
         <option>Management Science</option>
         <option>Social Science</option>
+        <option>Media Science</option>
       </select>
     </div>
   </div>

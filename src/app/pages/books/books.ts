@@ -41,7 +41,10 @@ export class BooksComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
 
-  constructor(private bookService: BookService, private _coreService: CoreService) {}
+  constructor(
+    private bookService: BookService,
+    private _coreService: CoreService,
+  ) {}
 
   ngOnInit(): void {
     this.bookForm = new FormGroup({
@@ -51,6 +54,7 @@ export class BooksComponent implements OnInit {
       year: new FormControl(new Date().getFullYear(), [Validators.required, Validators.min(1900)]),
       category: new FormControl('Book', Validators.required),
       department: new FormControl('Computer Science', Validators.required),
+      publisher: new FormControl('', Validators.required),
     });
 
     this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe((term) => {
@@ -105,6 +109,7 @@ export class BooksComponent implements OnInit {
       year: book.year,
       category: book.category,
       department: book.department ?? '',
+      publisher: book.publisher ?? '',
     });
   }
 
@@ -134,6 +139,7 @@ export class BooksComponent implements OnInit {
     formData.append('author', this.bookForm.get('author')?.value);
     formData.append('category', this.bookForm.get('category')?.value);
     formData.append('department', this.bookForm.get('department')?.value);
+    formData.append('publisher', this.bookForm.get('publisher')?.value);
     formData.append('year', this.bookForm.get('year')?.value);
     if (this.selectedFile) formData.append('attachment', this.selectedFile);
 
@@ -244,5 +250,21 @@ export class BooksComponent implements OnInit {
         alert('Something went wrong while downloading the document.');
       },
     });
+  }
+
+  showImageModal = false;
+  selectedImage: string | null = null;
+
+  openImage(book: any) {
+    this.selectedImage = book.previewImage
+      ? 'data:image/png;base64,' + book.previewImage
+      : 'assets/images/no-image.png';
+
+    this.showImageModal = true;
+  }
+
+  closeImageModal() {
+    this.showImageModal = false;
+    this.selectedImage = null;
   }
 }

@@ -316,3 +316,110 @@ td {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+
+.thumb-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.book-thumb {
+  width: 45px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.book-thumb:hover {
+  transform: scale(1.1);
+}
+
+.no-image {
+  width: 45px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f2f2f2;
+  border: 1px dashed #ccc;
+  font-size: 10px;
+  border-radius: 4px;
+  color: #777;
+  cursor: default;
+}
+
+/* ================= MODAL ================= */
+.image-modal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: darkred;
+}
+
+/* FORCE BIG IMAGE */
+.full-image {
+  display: block;
+
+  max-width: 95vw;
+  max-height: 95vh;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+
+  background: white;
+  padding: 6px;
+  border-radius: 8px;
+
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
+.image-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.full-image {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

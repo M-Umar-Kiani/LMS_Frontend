@@ -9,6 +9,8 @@
       <input type="text" placeholder="Author *" formControlName="author" name="author" required />
       <!-- [(ngModel)]="newBook.year" -->
       <input type="number" placeholder="Year *" formControlName="year" name="year" required />
+      <!-- [(ngModel)]="newBook.year" -->
+      <input type="text" placeholder="Publisher *" formControlName="publisher" name="publisher" required />
       <!-- [(ngModel)]="newBook.category" -->
       <select formControlName="category" name="category" required>
         <option>Book</option>
@@ -21,6 +23,7 @@
         <option>Computer Science</option>
         <option>Management Science</option>
         <option>Social Science</option>
+        <option>Media Science</option>
       </select>
     </div>
 
@@ -37,7 +40,7 @@
     <div class="actions">
       <button type="button" routerLink="/books" class="cancel-btn" (click)="cancel()">Cancel</button>
       <button type="submit" class="save-btn" (click)="addBook()">Add Book 2</button>
-      
+
     </div>
   </form>
 </div>
