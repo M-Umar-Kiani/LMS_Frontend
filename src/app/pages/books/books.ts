@@ -167,6 +167,7 @@ export class BooksComponent implements OnInit {
     formData.append('title', this.bookForm.get('bookTitle')?.value);
     formData.append('author', this.bookForm.get('author')?.value);
     formData.append('category', this.bookForm.get('category')?.value);
+    formData.append('publisher', this.bookForm.get('publisher')?.value);
     formData.append('department', this.bookForm.get('department')?.value);
     formData.append('year', this.bookForm.get('year')?.value);
 
@@ -220,6 +221,7 @@ export class BooksComponent implements OnInit {
   }
 
   downloadDocument(documentId: number): void {
+    this.isLoading = true;
     this.bookService.downloadDocument(documentId).subscribe({
       next: (response: DownloadResponseDto) => {
         if (
@@ -241,12 +243,14 @@ export class BooksComponent implements OnInit {
           link.download = response.fileName;
           link.click();
           URL.revokeObjectURL(url);
+          this.isLoading = false;
         } else {
+          this.isLoading = false;
           alert(response.message || 'Failed to download document.');
         }
       },
       error: (err) => {
-        console.error('Download error:', err);
+        this.isLoading = false;
         alert('Something went wrong while downloading the document.');
       },
     });

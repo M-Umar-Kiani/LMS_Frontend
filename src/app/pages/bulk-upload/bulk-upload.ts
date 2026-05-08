@@ -16,6 +16,7 @@ import { CoreService } from '../../services/core.service';
 export class BulkUpload {
   selectedDepartment = 'Select';
   selectedCategory = 'Select';
+  autoSelectTitle = 'Yes';
 
   files: any[] = [];
   isUploading = false;
@@ -59,6 +60,7 @@ export class BulkUpload {
     const formData = new FormData();
     formData.append('Department', this.selectedDepartment);
     formData.append('Category', this.selectedCategory);
+    formData.append('TitleSelection', this.autoSelectTitle);
     this.files.forEach((f) => {
       formData.append('files', f.file);
     });
