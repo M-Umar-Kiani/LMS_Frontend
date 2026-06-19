@@ -201,10 +201,37 @@ export class BooksComponent implements OnInit {
     });
   }
 
-  // Pagination navigation
-  nextPage() {
-    this.pageNumber++;
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize) || 1;
+  }
+
+  get pageNumbers(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(1, this.pageNumber - 2);
+    const end = Math.min(this.totalPages, this.pageNumber + 2);
+    for (let i = start; i <= end; i++) pages.push(i);
+    return pages;
+  }
+
+  get rangeStart(): number {
+    return (this.pageNumber - 1) * this.pageSize + 1;
+  }
+
+  get rangeEnd(): number {
+    return Math.min(this.pageNumber * this.pageSize, this.totalItems);
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageNumber = page;
     this.getBooks();
+  }
+
+  nextPage() {
+    if (this.pageNumber < this.totalPages) {
+      this.pageNumber++;
+      this.getBooks();
+    }
   }
 
   prevPage() {

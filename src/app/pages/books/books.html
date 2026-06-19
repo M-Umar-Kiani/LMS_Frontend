@@ -15,7 +15,7 @@
 
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
-      <option value="Books">Books</option>
+      <option value="Book">Book</option>
       <option value="Magazines">Magazines</option>
       <option value="Articles">Articles</option>
       <option value="Journals">Journals</option>
@@ -81,10 +81,24 @@
     </tbody>
     <app-loader [isLoading]="isLoading"></app-loader>
   </table>
-  <div class="pagination">
-    <button (click)="prevPage()" [disabled]="pageNumber === 1">⬅ Previous</button>
-    <span>Page {{ pageNumber }}</span>
-    <button (click)="nextPage()" [disabled]="books.length < pageSize">Next ➡</button>
+  <div class="pagination-wrapper">
+    <span class="pagination-info" *ngIf="totalItems > 0">
+      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalItems }} items
+    </span>
+    <div class="pagination">
+      <button (click)="goToPage(1)" [disabled]="pageNumber === 1" title="First page">«</button>
+      <button (click)="prevPage()" [disabled]="pageNumber === 1">‹ Prev</button>
+
+      <button *ngFor="let p of pageNumbers"
+              (click)="goToPage(p)"
+              [class.active]="p === pageNumber">
+        {{ p }}
+      </button>
+
+      <button (click)="nextPage()" [disabled]="pageNumber === totalPages">Next ›</button>
+      <button (click)="goToPage(totalPages)" [disabled]="pageNumber === totalPages" title="Last page">»</button>
+    </div>
+    <span class="pagination-info">Page {{ pageNumber }} of {{ totalPages }}</span>
   </div>
 </div>
 
@@ -126,7 +140,7 @@
         <div class="form-field">
           <label for="category">Category *</label>
           <select id="category" formControlName="category" name="category">
-            <option>Books</option>
+            <option>Book</option>
             <option>Magazines</option>
             <option>Article</option>
             <option>Journals</option>
