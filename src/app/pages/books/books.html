@@ -18,7 +18,7 @@
       <option value="Book">Book</option>
       <option value="Magazines">Magazines</option>
       <option value="Articles">Articles</option>
-      <option value="Journals">Journals</option>
+      <option value="Journal">Journal</option>
       <option value="Press Clippings">Press Clippings</option>
       <option value="Faculity Publications">Faculity Publications</option>
     </select>
@@ -61,7 +61,7 @@
             <div>
               <strong>{{ limitWords(book.title, 8) }}</strong>
               <br />
-              <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'" />
+              <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journal'" />
             </div>
           </div>
         </td>
@@ -143,7 +143,7 @@
             <option>Book</option>
             <option>Magazines</option>
             <option>Article</option>
-            <option>Journals</option>
+            <option>Journal</option>
             <option>Press Clippings</option>
             <option>Faculity Publications</option>
           </select>
