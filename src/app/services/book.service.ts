@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DownloadResponseDto } from '../models/Book.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
@@ -32,7 +31,10 @@ export class BookService {
     });
   }
 
-  downloadDocument(documentId: number): Observable<DownloadResponseDto> {
-    return this.http.get<DownloadResponseDto>(`${this.apiUrl}/download-document/${documentId}`);
+  downloadDocument(documentId: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.apiUrl}/download-document/${documentId}`, {
+      responseType: 'blob',
+      observe: 'response',
+    });
   }
 }

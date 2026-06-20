@@ -39,7 +39,7 @@
             <div class="book-info">
               <div>
                 <strong>{{ limitWords(book.title, 8) }}</strong><br />
-                <small>by {{ limitWords(book.author, 5) }}</small><br />
+                <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals' && book.category !== 'Magazine'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journals' && book.category !== 'Magazine'" />
               </div>
             </div>
           </td>

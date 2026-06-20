@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { UserTopbar } from '../user-topbar/user-topbar';
 import { Loader } from '../../../global/loader/loader';
-import { DownloadResponseDto } from '../../../models/Book.model';
 import { CoreService } from '../../../services/core.service';
 
 @Component({
@@ -47,32 +46,19 @@ export class BrowseBooks {
   downloadDocument(documentId: number): void {
     this.isLoading = true;
     this.bookService.downloadDocument(documentId).subscribe({
-      next: (response: DownloadResponseDto) => {
-        if (
-          response.isSuccess &&
-          response.base64Data &&
-          response.contentType &&
-          response.fileName
-        ) {
-          const byteCharacters = atob(response.base64Data);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: response.contentType });
-          const link = document.createElement('a');
-          const url = URL.createObjectURL(blob);
-          link.href = url;
-          link.download = response.fileName;
-          link.click();
-          URL.revokeObjectURL(url);
-          this._coreService.openSnackBar('Book downloaded successfully!', 'Ok', 'success');
-          this.isLoading = false;
-        } else {
-          this._coreService.openSnackBar('Download failed!', 'Ok', 'error');
-          this.isLoading = false;
-        }
+      next: (response) => {
+        const blob = response.body!;
+        const disposition = response.headers.get('Content-Disposition') ?? '';
+        const match = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\r\n]+)["']?/i);
+        const fileName = match ? decodeURIComponent(match[1]) : 'download';
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(url);
+        this._coreService.openSnackBar('Book downloaded successfully!', 'Ok', 'success');
+        this.isLoading = false;
       },
       error: (err) => {
         this._coreService.openSnackBar('Download failed!', 'Ok', 'error');
