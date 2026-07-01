@@ -1,46 +1,66 @@
 <div class="form-container">
-  <h2>📘 Add New Book qq</h2>
-  <!-- #bookForm="ngForm" -->
+  <h2>
+    <span class="material-icons">menu_book</span>
+    Add New Book
+  </h2>
   <form [formGroup]="bookForm">
     <div class="form-grid">
-      <!-- [(ngModel)]="newBook.title" -->
-      <input type="text" placeholder="Title *" formControlName="title" name="title" required />
-      <!-- [(ngModel)]="newBook.author" -->
-      <input type="text" placeholder="Author *" formControlName="author" name="author" required />
-      <!-- [(ngModel)]="newBook.year" -->
-      <input type="number" placeholder="Year *" formControlName="year" name="year" required />
-      <!-- [(ngModel)]="newBook.year" -->
-      <input type="text" placeholder="Publisher *" formControlName="publisher" name="publisher" required />
-      <!-- [(ngModel)]="newBook.category" -->
-      <select formControlName="category" name="category" required>
-        <option>Book</option>
-        <option>Magazine</option>
-        <option>Article</option>
-      </select>
-
-      <!-- [(ngModel)]="newBook.department" -->
-      <select name="department" formControlName="department" required>
-        <option>Computer Science</option>
-        <option>Management Science</option>
-        <option>Social Science</option>
-        <option>Media Science</option>
-      </select>
+      <div class="form-field">
+        <label for="title">Title *</label>
+        <input id="title" type="text" placeholder="Book title" formControlName="title" name="title" required />
+      </div>
+      <div class="form-field">
+        <label for="author">Author *</label>
+        <input id="author" type="text" placeholder="Author name" formControlName="author" name="author" required />
+      </div>
+      <div class="form-field">
+        <label for="year">Year *</label>
+        <input id="year" type="number" placeholder="Year" formControlName="year" name="year" required />
+      </div>
+      <div class="form-field">
+        <label for="publisher">Publisher *</label>
+        <input id="publisher" type="text" placeholder="Publisher" formControlName="publisher" name="publisher" required />
+      </div>
+      <div class="form-field">
+        <label for="category">Category *</label>
+        <select id="category" formControlName="category" name="category" required>
+          <option>Book</option>
+          <option>Magazine</option>
+          <option>Article</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="department">Department *</label>
+        <select id="department" name="department" formControlName="department" required>
+          <option>Computer Science</option>
+          <option>Management Science</option>
+          <option>Social Science</option>
+          <option>Media Science</option>
+        </select>
+      </div>
     </div>
 
-    <textarea placeholder="Description" name="description" formControlName="description"></textarea>
+    <div class="form-field full-width">
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Short description" name="description" formControlName="description"></textarea>
+    </div>
 
     <div class="upload-box">
-      <input type="file" (change)="onFileSelected($event)" accept="application/pdf" />
-      <small>📂 Click to upload PDF file (PDF only)</small>
+      <label class="file-label" for="fileUpload">
+        <span class="material-icons">folder_open</span>
+        Choose PDF File
+      </label>
+      <input id="fileUpload" type="file" (change)="onFileSelected($event)" accept="application/pdf" />
+      <small>Only PDF files are accepted</small>
       <div *ngIf="selectedFile" class="file-preview">
-        <strong>📄 {{ selectedFile.name }}</strong> ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
+        <span class="material-icons">description</span>
+        <strong>{{ selectedFile.name }}</strong> ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
       </div>
     </div>
 
     <div class="actions">
       <button type="button" routerLink="/books" class="cancel-btn" (click)="cancel()">Cancel</button>
-      <button type="submit" class="save-btn" (click)="addBook()">Add Book 2</button>
-
+      <button type="submit" class="save-btn" (click)="addBook()">Add Book</button>
     </div>
   </form>
 </div>

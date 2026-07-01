@@ -2,15 +2,26 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 
 <div class="browse-container">
+  <div class="page-header">
+    <h2>Browse Books</h2>
+    <p>Explore the full library catalogue</p>
+  </div>
+
   <!-- Filters -->
   <div class="filters-bar">
-    <input type="text" placeholder="Search by Title, Author, or Department..." [(ngModel)]="searchTerm"
-      (input)="onSearchChange()" />
+    <div class="search-field">
+      <span class="material-icons">search</span>
+      <input type="text" placeholder="Search by Title, Author, or Department..." [(ngModel)]="searchTerm"
+        (input)="onSearchChange()" />
+    </div>
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
       <option value="Book">Book</option>
-      <option value="Magazine">Magazine</option>
-      <option value="Article">Article</option>
+      <option value="Magazines">Magazines</option>
+      <option value="Articles">Articles</option>
+      <option value="Journals">Journals</option>
+      <option value="Press Clippings">Press Clippings</option>
+      <option value="Faculity Publications">Faculity Publications</option>
     </select>
 
     <select [(ngModel)]="selectedDepartment" (change)="applyFilter()">
@@ -18,7 +29,27 @@
       <option value="Computer Science">Computer Science</option>
       <option value="Management Science">Management Science</option>
       <option value="Social Science">Social Science</option>
+      <option value="Media Science">Media Science</option>
     </select>
+
+    <div class="filters-more">
+      <div class="publisher-field">
+        <span class="material-icons">business</span>
+        <input type="text" placeholder="Publisher..." [(ngModel)]="selectedPublisher" (change)="applyFilter()" />
+      </div>
+
+      <div class="year-range-field">
+        <span class="material-icons">event</span>
+        <input type="number" placeholder="Year from" [(ngModel)]="yearFrom" (change)="applyFilter()" />
+        <span class="year-sep">–</span>
+        <input type="number" placeholder="Year to" [(ngModel)]="yearTo" (change)="applyFilter()" />
+      </div>
+
+      <button class="clear-btn" (click)="clearFilters()" title="Clear all filters">
+        <span class="material-icons">filter_alt_off</span>
+        Clear
+      </button>
+    </div>
   </div>
 
   <!-- Book Table -->
@@ -27,6 +58,7 @@
       <thead>
         <tr>
           <th>Book Details</th>
+          <th>Publisher</th>
           <th>Category</th>
           <th>Department</th>
           <th>Year</th>
@@ -34,7 +66,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let book of books">
+        <tr *ngFor="let book of books" class="book-row" (click)="openDetail(book)">
           <td>
             <div class="book-info">
               <div>
@@ -43,6 +75,7 @@
               </div>
             </div>
           </td>
+          <td>{{ book.publisher || '—' }}</td>
           <td>
             <span class="badge blue">{{ book.category }}</span>
           </td>
@@ -50,15 +83,100 @@
           <td>{{ book.year }}</td>
 
           <td>
-            <button class="icon-btn" (click)="downloadDocument(book.documentId)">⬇️</button>
+            <button class="icon-btn" (click)="downloadDocument(book.documentId); $event.stopPropagation()">
+              <span class="material-icons">download</span>
+              Download
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <div class="pagination">
-      <button (click)="prevPage()" [disabled]="pageNumber === 1">⬅ Previous</button>
-      <span>Page {{ pageNumber }}</span>
-      <button (click)="nextPage()" [disabled]="books.length < pageSize">Next ➡</button>
+    <div class="pagination-wrapper">
+      <span class="pagination-info" *ngIf="totalItems > 0">
+        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalItems }} items
+      </span>
+      <div class="pagination">
+        <button (click)="goToPage(1)" [disabled]="pageNumber === 1" title="First page">«</button>
+        <button (click)="prevPage()" [disabled]="pageNumber === 1">
+          <span class="material-icons">chevron_left</span> Previous
+        </button>
+
+        <button *ngFor="let p of pageNumbers" (click)="goToPage(p)" [class.active]="p === pageNumber">
+          {{ p }}
+        </button>
+
+        <button (click)="nextPage()" [disabled]="pageNumber === totalPages">
+          Next <span class="material-icons">chevron_right</span>
+        </button>
+        <button (click)="goToPage(totalPages)" [disabled]="pageNumber === totalPages" title="Last page">»</button>
+      </div>
+      <span class="pagination-info">Page {{ pageNumber }} of {{ totalPages }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Book Detail Modal -->
+<div class="detail-modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+  <div class="detail-modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeDetail()">
+      <span class="material-icons">close</span>
+    </button>
+
+    <div class="detail-content" *ngIf="selectedBook">
+      <div class="detail-cover">
+        <img *ngIf="selectedBook.previewImage" [src]="'data:image/png;base64,' + selectedBook.previewImage" />
+        <div class="no-cover" *ngIf="!selectedBook.previewImage">
+          <span class="material-icons">menu_book</span>
+        </div>
+      </div>
+
+      <div class="detail-info">
+        <h3>{{ selectedBook.title }}</h3>
+        <p class="detail-author" *ngIf="selectedBook.author">by {{ selectedBook.author }}</p>
+
+        <div class="detail-grid">
+          <div class="detail-field">
+            <span class="material-icons">category</span>
+            <div>
+              <label>Category</label>
+              <strong>{{ selectedBook.category || '—' }}</strong>
+            </div>
+          </div>
+          <div class="detail-field">
+            <span class="material-icons">apartment</span>
+            <div>
+              <label>Department</label>
+              <strong>{{ selectedBook.department || '—' }}</strong>
+            </div>
+          </div>
+          <div class="detail-field">
+            <span class="material-icons">business</span>
+            <div>
+              <label>Publisher</label>
+              <strong>{{ selectedBook.publisher || '—' }}</strong>
+            </div>
+          </div>
+          <div class="detail-field">
+            <span class="material-icons">event</span>
+            <div>
+              <label>Year</label>
+              <strong>{{ selectedBook.year || '—' }}</strong>
+            </div>
+          </div>
+          <div class="detail-field" *ngIf="selectedBook.createdDate">
+            <span class="material-icons">schedule</span>
+            <div>
+              <label>Added On</label>
+              <strong>{{ selectedBook.createdDate | date:'mediumDate' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <button class="download-btn-large" (click)="downloadDocument(selectedBook.documentId)">
+          <span class="material-icons">download</span>
+          Download
+        </button>
+      </div>
     </div>
   </div>
 </div>

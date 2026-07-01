@@ -65,6 +65,7 @@ export class BooksComponent implements OnInit {
   }
 
   applyFilter() {
+    this.pageNumber = 1;
     this.getBooks();
   }
 

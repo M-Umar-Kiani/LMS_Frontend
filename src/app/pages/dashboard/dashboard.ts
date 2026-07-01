@@ -6,9 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { PopularBook } from '../../models/Book.model';
 import { TooltipPipe } from '../../custom-pipes/tooltip-pipe';
 import { forkJoin } from 'rxjs';
-import { ExcelService } from '../../services/excel.service';
-import { CoreService } from '../../services/core.service';
-import { saveAs } from 'file-saver';
 import { Loader } from '../../global/loader/loader';
 
 @Component({
@@ -22,6 +19,9 @@ export class Dashboard implements OnInit {
   categoryChart: Chart | null = null;
   departmentChart: Chart | null = null;
   activityChart: Chart | null = null;
+  topBooksChart: Chart | null = null;
+  booksSparkline: Chart | null = null;
+  downloadsSparkline: Chart | null = null;
 
   departmentWidgetData: DepartmentWidgetDto = {
     departmentName: [],
@@ -33,6 +33,11 @@ export class Dashboard implements OnInit {
   };
 
   monthilyActivityWidgetData: MonthilyActivityWidget = {
+    monthName: [],
+    bookCount: [],
+  };
+
+  downloadTrendWidgetData: MonthilyActivityWidget = {
     monthName: [],
     bookCount: [],
   };
@@ -49,9 +54,7 @@ export class Dashboard implements OnInit {
 
   constructor(
     private zone: NgZone,
-    private widgetService: WidgetService,
-    private excelService: ExcelService,
-    private _coreService: CoreService
+    private widgetService: WidgetService
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +136,7 @@ export class Dashboard implements OnInit {
       department: this.widgetService.GetBookByDepartmentWidget(this.datePayload),
       popularBooks: this.widgetService.GetPopularBooks(this.datePayload),
       monthlyActivity: this.widgetService.GetMonthlyActivityWidget(this.datePayload),
+      downloadTrend: this.widgetService.GetDownloadTrendWidget(this.datePayload),
     }).subscribe({
       next: (res: any) => {
         this.bookCount = res.totalBooks.bookCount;
@@ -150,6 +154,7 @@ export class Dashboard implements OnInit {
         }));
 
         this.monthilyActivityWidgetData = res.monthlyActivity;
+        this.downloadTrendWidgetData = res.downloadTrend;
         setTimeout(() => {
           this.createCharts();
           this.isLoading = false;
@@ -260,12 +265,13 @@ export class Dashboard implements OnInit {
             {
               label: 'Books',
               data: this.departmentWidgetData.bookCount,
-              backgroundColor: '#3b82f6',
+              backgroundColor: '#1b488c',
               borderRadius: 6,
             },
           ],
         },
         options: {
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
@@ -277,7 +283,7 @@ export class Dashboard implements OnInit {
             },
           },
           scales: {
-            y: {
+            x: {
               beginAtZero: true,
               ticks: {
                 color: '#374151',
@@ -286,7 +292,7 @@ export class Dashboard implements OnInit {
                 color: '#f3f4f6',
               },
             },
-            x: {
+            y: {
               ticks: {
                 color: '#374151',
               },
@@ -304,25 +310,174 @@ export class Dashboard implements OnInit {
       if (this.activityChart) {
         this.activityChart.destroy();
       }
+      const cumulative: number[] = [];
+      let running = 0;
+      for (const v of this.monthilyActivityWidgetData.bookCount) {
+        running += v;
+        cumulative.push(running);
+      }
+
       this.activityChart = new Chart('activityChart', {
+        type: 'bar',
+        data: {
+          labels: this.monthilyActivityWidgetData.monthName,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Uploads',
+              data: this.monthilyActivityWidgetData.bookCount,
+              backgroundColor: 'rgba(27,72,140,0.25)',
+              borderRadius: 6,
+              yAxisID: 'y',
+              order: 2,
+            },
+            {
+              type: 'line',
+              label: 'Cumulative',
+              data: cumulative,
+              borderColor: '#1b488c',
+              backgroundColor: '#1b488c',
+              tension: 0.3,
+              yAxisID: 'y1',
+              order: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { boxWidth: 10, color: '#374151' },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              position: 'left',
+              grid: { color: '#f3f4f6' },
+              ticks: { color: '#374151' },
+            },
+            y1: {
+              beginAtZero: true,
+              position: 'right',
+              grid: { display: false },
+              ticks: { color: '#374151' },
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#374151' },
+            },
+          },
+        },
+      });
+    }
+
+    const topBooksCanvas = document.getElementById('topBooksChart') as HTMLCanvasElement;
+    if (topBooksCanvas) {
+      if (this.topBooksChart) {
+        this.topBooksChart.destroy();
+      }
+      this.topBooksChart = new Chart(topBooksCanvas, {
+        type: 'bar',
+        data: {
+          labels: this.popularBooks.map((b) => (b.title?.length > 22 ? b.title.slice(0, 22) + '…' : b.title)),
+          datasets: [
+            {
+              label: 'Downloads',
+              data: this.popularBooks.map((b) => b.download),
+              backgroundColor: '#16a34a',
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#111827',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+            },
+          },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: '#374151' }, grid: { color: '#f3f4f6' } },
+            y: { ticks: { color: '#374151' }, grid: { display: false } },
+          },
+        },
+      });
+    }
+
+    this.createSparklines();
+    this.isLoading = false;
+  }
+
+  private sparklineOptions(color: string): any {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      elements: { point: { radius: 0 } },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false },
+      },
+    };
+  }
+
+  createSparklines(): void {
+    const booksCanvas = document.getElementById('booksSparkline') as HTMLCanvasElement;
+    if (booksCanvas) {
+      if (this.booksSparkline) {
+        this.booksSparkline.destroy();
+      }
+      this.booksSparkline = new Chart(booksCanvas, {
         type: 'line',
         data: {
           labels: this.monthilyActivityWidgetData.monthName,
           datasets: [
             {
-              label: 'Upload(s)',
               data: this.monthilyActivityWidgetData.bookCount,
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59,130,246,0.2)',
+              borderColor: '#1b488c',
+              backgroundColor: 'rgba(27,72,140,0.15)',
               fill: true,
-              tension: 0.3,
+              tension: 0.35,
+              borderWidth: 2,
             },
           ],
         },
-        options: { plugins: { legend: { display: false } } },
+        options: this.sparklineOptions('#1b488c'),
       });
     }
-    this.isLoading = false;
+
+    const downloadsCanvas = document.getElementById('downloadsSparkline') as HTMLCanvasElement;
+    if (downloadsCanvas) {
+      if (this.downloadsSparkline) {
+        this.downloadsSparkline.destroy();
+      }
+      this.downloadsSparkline = new Chart(downloadsCanvas, {
+        type: 'line',
+        data: {
+          labels: this.downloadTrendWidgetData.monthName,
+          datasets: [
+            {
+              data: this.downloadTrendWidgetData.bookCount,
+              borderColor: '#16a34a',
+              backgroundColor: 'rgba(22,163,74,0.15)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: this.sparklineOptions('#16a34a'),
+      });
+    }
   }
 
   hasData(widgetData: any): boolean {
@@ -382,45 +537,6 @@ export class Dashboard implements OnInit {
   hasMonthlyActivityData(): boolean {
     const data = this.monthilyActivityWidgetData?.bookCount;
     return Array.isArray(data) && data.some((v) => v > 0);
-  }
-
-  // Download Excel Report
-  downloadCategoryReportExcel() {
-    this.isLoading = true;
-    if (!this.startDate || !this.endDate) {
-      return;
-    }
-    this.excelService.downloadDepartmentReportExcel(this.startDate, this.endDate).subscribe({
-      next: (blob: Blob) => {
-        saveAs(blob, `CategoryReport_${this.startDate}_to_${this.endDate}.xlsx`);
-        this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error(err);
-        this._coreService.openSnackBar('Failed to export file', 'Ok');
-      },
-    });
-  }
-
-  downloadDepartmentReportExcel() {
-    this.isLoading = true;
-    if (!this.startDate || !this.endDate) {
-      return;
-    }
-    this.excelService.downloadCategoryReportExcel(this.startDate, this.endDate).subscribe({
-      next: (blob: Blob) => {
-        saveAs(blob, `DepartmentReport_${this.startDate}_to_${this.endDate}.xlsx`);
-        this._coreService.openSnackBar('File Exported Successfully!', 'Ok');
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = true;
-        console.error(err);
-        this._coreService.openSnackBar('Failed to export file', 'Ok');
-      },
-    });
   }
 
   formatEndDate(year: number, month: number, day: number): string {

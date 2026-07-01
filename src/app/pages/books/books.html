@@ -5,20 +5,26 @@
       <h2>Books Management</h2>
       <p>Manage your library collection</p>
     </div>
-    <button class="add-btn" (click)="openAddModal()">+ Add Book</button>
+    <button class="add-btn" (click)="openAddModal()">
+      <span class="material-icons">add</span>
+      Add Book
+    </button>
   </div>
 
   <!-- Filters -->
   <div class="filters-bar">
-    <input type="text" placeholder="Search by Title, Author, or Department..." [(ngModel)]="searchTerm"
-      (input)="onSearchChange()" />
+    <div class="search-field">
+      <span class="material-icons">search</span>
+      <input type="text" placeholder="Search by Title, Author, or Department..." [(ngModel)]="searchTerm"
+        (input)="onSearchChange()" />
+    </div>
 
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
       <option value="Book">Book</option>
       <option value="Magazines">Magazines</option>
       <option value="Articles">Articles</option>
-      <option value="Journal">Journal</option>
+      <option value="Journals">Journals</option>
       <option value="Press Clippings">Press Clippings</option>
       <option value="Faculity Publications">Faculity Publications</option>
     </select>
@@ -33,72 +39,82 @@
   </div>
 
   <!-- Table -->
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Category</th>
-        <th>Department</th>
-        <th>Publisher</th>
-        <th>Year</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let book of books">
-        <td>
-          <div class="book-info">
-            <div class="thumb-wrapper">
-              <img (click)="openImage(book)" *ngIf="book.previewImage; else noImage"
-                [src]="'data:image/png;base64,' + book.previewImage" class="book-thumb" />
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Department</th>
+          <th>Publisher</th>
+          <th>Year</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td>
+            <div class="book-info">
+              <div class="thumb-wrapper">
+                <img (click)="openImage(book)" *ngIf="book.previewImage; else noImage"
+                  [src]="'data:image/png;base64,' + book.previewImage" class="book-thumb" />
 
-              <ng-template #noImage>
-                <div class="no-image">
-                  📄 No Image
-                </div>
-              </ng-template>
+                <ng-template #noImage>
+                  <div class="no-image">
+                    <span class="material-icons">description</span>
+                  </div>
+                </ng-template>
+              </div>
+              <div>
+                <strong>{{ limitWords(book.title, 8) }}</strong>
+                <br />
+                <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'" />
+              </div>
             </div>
-            <div>
-              <strong>{{ limitWords(book.title, 8) }}</strong>
-              <br />
-              <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journal'" />
+          </td>
+          <td>
+            <span class="badge blue">{{ book.category ?? 'N/A' }}</span>
+          </td>
+          <td>{{ book.department ?? 'N/A' }}</td>
+          <td>{{ book.publisher ?? 'N/A' }}</td>
+          <td>{{ book.year ?? 'N/A' }}</td>
+
+          <td>
+            <div class="row-actions">
+              <button class="icon-btn" title="Download" (click)="downloadDocument(book.documentId)">
+                <span class="material-icons">download</span>
+              </button>
+              <button class="icon-btn" title="Edit" (click)="openEditModel(book)">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="icon-btn delete" title="Delete" (click)="deleteBook(book.documentId)">
+                <span class="material-icons">delete</span>
+              </button>
             </div>
-          </div>
-        </td>
-        <td>
-          <span class="badge blue">{{ book.category ?? 'N/A' }}</span>
-        </td>
-        <td>{{ book.department ?? 'N/A' }}</td>
-        <td>{{ book.publisher ?? 'N/A' }}</td>
-        <td>{{ book.year ?? 'N/A' }}</td>
+          </td>
+        </tr>
+      </tbody>
+      <app-loader [isLoading]="isLoading"></app-loader>
+    </table>
+    <div class="pagination-wrapper">
+      <span class="pagination-info" *ngIf="totalItems > 0">
+        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalItems }} items
+      </span>
+      <div class="pagination">
+        <button (click)="goToPage(1)" [disabled]="pageNumber === 1" title="First page">«</button>
+        <button (click)="prevPage()" [disabled]="pageNumber === 1">‹ Prev</button>
 
-        <td>
-          <button class="icon-btn" (click)="downloadDocument(book.documentId)">⬇️</button>
-          <button class="icon-btn" (click)="openEditModel(book)">✏️</button>
-          <button class="icon-btn delete" (click)="deleteBook(book.documentId)">🗑️</button>
-        </td>
-      </tr>
-    </tbody>
-    <app-loader [isLoading]="isLoading"></app-loader>
-  </table>
-  <div class="pagination-wrapper">
-    <span class="pagination-info" *ngIf="totalItems > 0">
-      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalItems }} items
-    </span>
-    <div class="pagination">
-      <button (click)="goToPage(1)" [disabled]="pageNumber === 1" title="First page">«</button>
-      <button (click)="prevPage()" [disabled]="pageNumber === 1">‹ Prev</button>
+        <button *ngFor="let p of pageNumbers"
+                (click)="goToPage(p)"
+                [class.active]="p === pageNumber">
+          {{ p }}
+        </button>
 
-      <button *ngFor="let p of pageNumbers"
-              (click)="goToPage(p)"
-              [class.active]="p === pageNumber">
-        {{ p }}
-      </button>
-
-      <button (click)="nextPage()" [disabled]="pageNumber === totalPages">Next ›</button>
-      <button (click)="goToPage(totalPages)" [disabled]="pageNumber === totalPages" title="Last page">»</button>
+        <button (click)="nextPage()" [disabled]="pageNumber === totalPages">Next ›</button>
+        <button (click)="goToPage(totalPages)" [disabled]="pageNumber === totalPages" title="Last page">»</button>
+      </div>
+      <span class="pagination-info">Page {{ pageNumber }} of {{ totalPages }}</span>
     </div>
-    <span class="pagination-info">Page {{ pageNumber }} of {{ totalPages }}</span>
   </div>
 </div>
 
@@ -106,8 +122,13 @@
 <div class="modal-overlay" *ngIf="showModal">
   <div class="modal">
     <div class="modal-header">
-      <h3>📘 {{ isEdit ? 'Edit' : 'Add New' }} Book</h3>
-      <button class="close-btn" (click)="closeModal()">✖</button>
+      <h3>
+        <span class="material-icons">menu_book</span>
+        {{ isEdit ? 'Edit' : 'Add New' }} Book
+      </h3>
+      <button class="close-btn" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
     </div>
 
     <form [formGroup]="bookForm">
@@ -143,7 +164,7 @@
             <option>Book</option>
             <option>Magazines</option>
             <option>Article</option>
-            <option>Journal</option>
+            <option>Journals</option>
             <option>Press Clippings</option>
             <option>Faculity Publications</option>
           </select>
@@ -164,14 +185,16 @@
       <!-- File Upload Section -->
       <div class="upload-box" *ngIf="!isEdit">
         <label class="file-label" for="fileUpload">
-          📂 Choose File
+          <span class="material-icons">folder_open</span>
+          Choose File
           <input id="fileUpload" type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.jpg,.png" />
         </label>
         <small> Only one file can be uploaded (PDF or Image)</small>
 
         <!-- Optional: show preview -->
         <div *ngIf="selectedFile" class="file-preview">
-          <strong>📄 {{ selectedFile.name }}</strong>
+          <span class="material-icons">description</span>
+          <strong>{{ selectedFile.name }}</strong>
           ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
         </div>
       </div>
@@ -188,7 +211,9 @@
 <div class="image-modal-overlay" *ngIf="showImageModal">
   <div class="image-modal">
 
-    <button class="close-btn" (click)="closeImageModal()">✖</button>
+    <button class="close-btn" (click)="closeImageModal()">
+      <span class="material-icons">close</span>
+    </button>
 
     <img [src]="selectedImage" class="full-image" />
 

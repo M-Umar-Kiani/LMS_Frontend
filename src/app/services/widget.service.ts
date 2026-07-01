@@ -31,4 +31,24 @@ export class WidgetService {
   GetMonthlyActivityWidget(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/get-monthly-activity-data`, data);
   }
+
+  GetDownloadTrendWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-download-trend-widget`, data);
+  }
+
+  GetDepartmentPerformanceWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-department-performance-widget`, data);
+  }
+
+  GetYearPopularityWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-year-popularity-widget`, data);
+  }
+
+  GetCategoryDepartmentWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-category-department-widget`, data);
+  }
+
+  GetDataQualityWidget(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-data-quality-widget`, data);
+  }
 }

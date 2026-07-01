@@ -1,38 +1,63 @@
+<app-loader [isLoading]="isLoading"></app-loader>
 <div class="reports-container">
   <div class="header">
-    <h2>Reports & Analytics</h2>
-    <p>Library usage statistics and insights</p>
+    <div>
+      <h2>Reports &amp; Analytics</h2>
+      <p>Library usage statistics and insights</p>
+    </div>
     <div class="actions">
-      <select>
-        <option>This Month</option>
-        <option>Last Month</option>
-        <option>This Year</option>
-      </select>
-      <button class="export-btn">Export Report</button>
+      <div class="date-filter-wrapper">
+        <select class="date-filter-select" [(ngModel)]="selectedRange" (change)="onRangeChange()">
+          <option value="monthToDate">Month to Date</option>
+          <option value="lastMonth">Last Month</option>
+          <option value="lastThreeMonths">Last 3 Months</option>
+          <option value="thisYear">This Year</option>
+          <option value="lastYear">Last Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+
+        <div class="date-range-box" *ngIf="selectedRange === 'custom'">
+          <input type="date" [(ngModel)]="startDate" (change)="onCustomDateChange()" />
+          <span>to</span>
+          <input type="date" [(ngModel)]="endDate" (change)="onCustomDateChange()" />
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Summary Cards -->
   <div class="cards-grid">
     <div class="card">
-      <h4>Total Books</h4>
-      <h2>8</h2>
-      <small>📘 12% vs last month</small>
+      <div class="card-icon blue"><span class="material-icons">menu_book</span></div>
+      <div>
+        <h4>Total Books</h4>
+        <h2>8</h2>
+        <small class="trend up"><span class="material-icons">trending_up</span> 12% vs last month</small>
+      </div>
     </div>
     <div class="card">
-      <h4>Active Users</h4>
-      <h2>3</h2>
-      <small>👤 8% vs last month</small>
+      <div class="card-icon green"><span class="material-icons">group</span></div>
+      <div>
+        <h4>Active Users</h4>
+        <h2>3</h2>
+        <small class="trend up"><span class="material-icons">trending_up</span> 8% vs last month</small>
+      </div>
     </div>
     <div class="card">
-      <h4>Active Borrows</h4>
-      <h2>1</h2>
-      <small>📈 15% vs last month</small>
+      <div class="card-icon amber"><span class="material-icons">bookmark</span></div>
+      <div>
+        <h4>Active Borrows</h4>
+        <h2>1</h2>
+        <small class="trend up"><span class="material-icons">trending_up</span> 15% vs last month</small>
+      </div>
     </div>
     <div class="card">
-      <h4>Total Borrows</h4>
-      <h2>3</h2>
-      <small>📊 23% vs last month</small>
+      <div class="card-icon purple"><span class="material-icons">insights</span></div>
+      <div>
+        <h4>Total Borrows</h4>
+        <h2>3</h2>
+        <small class="trend up"><span class="material-icons">trending_up</span> 23% vs last month</small>
+      </div>
     </div>
   </div>
 
@@ -41,45 +66,202 @@
     <div class="chart-card">
       <div class="chart-header">
         <h4>Department Usage</h4>
-        <a href="#">Export</a>
       </div>
       <canvas id="deptChart"></canvas>
     </div>
 
-    <!-- <div class="chart-card">
+    <div class="chart-card">
       <div class="chart-header">
-        <h4>Monthly Activity</h4>
-        <a href="#">Export</a>
+        <h4>Department Performance</h4>
+        <span class="chart-hint">Books vs Downloads vs Utilization</span>
       </div>
-      <canvas id="activityChart"></canvas>
-    </div> -->
+      <canvas id="deptPerformanceChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>Publication Year Popularity</h4>
+        <span class="chart-hint">Old vs new books</span>
+      </div>
+      <canvas id="yearPopularityChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>Category by Department</h4>
+        <span class="chart-hint">Stacked distribution</span>
+      </div>
+      <canvas id="categoryDepartmentChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>Data Quality Score</h4>
+        <span class="chart-hint">Complete vs missing metadata</span>
+      </div>
+      <canvas id="dataQualityChart"></canvas>
+    </div>
   </div>
 
-  <!-- Popular Books Table -->
-  <!-- <div class="popular-card">
-    <div class="chart-header">
-      <h4>Most Popular Books</h4>
-      <a href="#">Export</a>
+  <!-- ================= Reports Library ================= -->
+  <div class="library-header">
+    <h3>Reports Library</h3>
+    <p>Pick any report below — it will export for the date range selected above.</p>
+  </div>
+
+  <div class="report-section">
+    <h4 class="section-title"><span class="material-icons">inventory_2</span> Collection &amp; Inventory</h4>
+    <div class="report-grid">
+      <div class="report-card" *ngFor="let report of collectionReports">
+        <div class="report-icon"><span class="material-icons">{{ report.icon }}</span></div>
+        <div class="report-body">
+          <h5>{{ report.title }}</h5>
+          <p>{{ report.description }}</p>
+
+          <div class="report-extra" *ngIf="report.extra === 'granularity'">
+            <label>Granularity</label>
+            <select [(ngModel)]="granularity">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+          <div class="report-extra" *ngIf="report.extra === 'days'">
+            <label>Last N Days</label>
+            <input type="number" min="1" [(ngModel)]="recentDays" />
+          </div>
+
+          <div class="download-actions">
+            <button class="download-btn" (click)="downloadReport(report, 'excel')">
+              <span class="material-icons">grid_on</span> Excel
+            </button>
+            <button class="download-btn pdf" (click)="downloadReport(report, 'pdf')">
+              <span class="material-icons">picture_as_pdf</span> PDF
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Book</th>
-          <th>Author</th>
-          <th>Department</th>
-          <th>Borrows</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let b of popularBooks">
-          <td>{{ b.rank }}</td>
-          <td>{{ b.title }}</td>
-          <td>{{ b.author }}</td>
-          <td>{{ b.dept }}</td>
-          <td><span class="badge green">{{ b.borrows }} times</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
+  </div>
+
+  <div class="report-section">
+    <h4 class="section-title"><span class="material-icons">bar_chart</span> Usage &amp; Downloads</h4>
+    <div class="report-grid">
+      <div class="report-card" *ngFor="let report of usageReports">
+        <div class="report-icon"><span class="material-icons">{{ report.icon }}</span></div>
+        <div class="report-body">
+          <h5>{{ report.title }}</h5>
+          <p>{{ report.description }}</p>
+
+          <div class="report-extra" *ngIf="report.extra === 'top'">
+            <label>Top N Books</label>
+            <input type="number" min="1" [(ngModel)]="topN" />
+          </div>
+          <div class="report-extra" *ngIf="report.extra === 'granularity'">
+            <label>Granularity</label>
+            <select [(ngModel)]="granularity">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+
+          <div class="download-actions">
+            <button class="download-btn" (click)="downloadReport(report, 'excel')">
+              <span class="material-icons">grid_on</span> Excel
+            </button>
+            <button class="download-btn pdf" (click)="downloadReport(report, 'pdf')">
+              <span class="material-icons">picture_as_pdf</span> PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <h4 class="section-title"><span class="material-icons">fact_check</span> Data Quality</h4>
+    <div class="report-grid">
+      <div class="report-card" *ngFor="let report of dataQualityReports">
+        <div class="report-icon"><span class="material-icons">{{ report.icon }}</span></div>
+        <div class="report-body">
+          <h5>{{ report.title }}</h5>
+          <p>{{ report.description }}</p>
+
+          <div class="download-actions">
+            <button class="download-btn" (click)="downloadReport(report, 'excel')">
+              <span class="material-icons">grid_on</span> Excel
+            </button>
+            <button class="download-btn pdf" (click)="downloadReport(report, 'pdf')">
+              <span class="material-icons">picture_as_pdf</span> PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Custom Report Builder ================= -->
+  <div class="report-section">
+    <h4 class="section-title"><span class="material-icons">tune</span> Custom Report Builder</h4>
+    <div class="custom-builder">
+      <p class="builder-hint">Filter by any combination below and optionally group the results — for any ad-hoc request.</p>
+      <div class="builder-grid">
+        <div class="form-field">
+          <label>Category</label>
+          <select [(ngModel)]="customCategory">
+            <option value="">Any</option>
+            <option value="Book">Book</option>
+            <option value="Magazines">Magazines</option>
+            <option value="Articles">Articles</option>
+            <option value="Journals">Journals</option>
+            <option value="Press Clippings">Press Clippings</option>
+            <option value="Faculity Publications">Faculity Publications</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Department</label>
+          <select [(ngModel)]="customDepartment">
+            <option value="">Any</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Management Science">Management Science</option>
+            <option value="Social Science">Social Science</option>
+            <option value="Media Science">Media Science</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Publisher contains</label>
+          <input type="text" [(ngModel)]="customPublisher" placeholder="e.g. Pearson" />
+        </div>
+        <div class="form-field">
+          <label>Year From</label>
+          <input type="number" [(ngModel)]="customYearFrom" placeholder="e.g. 2015" />
+        </div>
+        <div class="form-field">
+          <label>Year To</label>
+          <input type="number" [(ngModel)]="customYearTo" placeholder="e.g. 2025" />
+        </div>
+        <div class="form-field">
+          <label>Group By</label>
+          <select [(ngModel)]="customGroupBy">
+            <option value="None">None (detail list)</option>
+            <option value="Category">Category</option>
+            <option value="Department">Department</option>
+            <option value="Publisher">Publisher</option>
+            <option value="Year">Year</option>
+          </select>
+        </div>
+      </div>
+      <div class="download-actions">
+        <button class="download-btn primary" (click)="generateCustomReport('excel')">
+          <span class="material-icons">grid_on</span> Generate Excel
+        </button>
+        <button class="download-btn primary pdf" (click)="generateCustomReport('pdf')">
+          <span class="material-icons">picture_as_pdf</span> Generate PDF
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

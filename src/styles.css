@@ -1,23 +1,129 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  /* SZABIST navy brand palette */
+  --color-primary: #1b488c;
+  --color-primary-dark: #123566;
+  --color-primary-darker: #0d2749;
+  --color-primary-light: #2f63b8;
+  --color-primary-50: #eef3fb;
+  --color-primary-100: #dde7f6;
+
+  /* Neutrals */
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* Semantic */
+  --color-success: #16a34a;
+  --color-success-bg: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef3c7;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fee2e2;
+  --color-info: #2563eb;
+  --color-info-bg: #dbeafe;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --border-color: #e2e8f0;
+
+  /* Elevation */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12), 0 4px 8px rgba(15, 23, 42, 0.04);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
+  background: var(--surface-muted);
+  color: var(--gray-800);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Material icon sizing/alignment helper used across the app */
+.material-icons {
+  vertical-align: middle;
+  line-height: 1;
+  font-size: 20px;
+}
+
+/* Shared badge styling */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.badge.blue {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+.badge.green {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+.badge.yellow {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 /* SUCCESS */
 .snack-success .mdc-snackbar__surface {
-  background-color: #4caf50 !important; /* Green */
+  background-color: #16a34a !important;
   color: #ffffff !important;
 }
 
 /* ERROR */
 .snack-error .mdc-snackbar__surface {
-  background-color: #f44336 !important; /* Red */
+  background-color: #dc2626 !important;
   color: #ffffff !important;
 }
 

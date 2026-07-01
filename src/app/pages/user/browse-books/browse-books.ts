@@ -25,6 +25,12 @@ export class BrowseBooks {
 
   selectedCategory = '';
   selectedDepartment = '';
+  selectedPublisher = '';
+  yearFrom: number | null = null;
+  yearTo: number | null = null;
+
+  showDetailModal = false;
+  selectedBook: any = null;
 
   private searchSubject = new Subject<string>();
 
@@ -40,7 +46,28 @@ export class BrowseBooks {
   }
 
   applyFilter() {
+    this.pageNumber = 1;
     this.loadData();
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.selectedDepartment = '';
+    this.selectedPublisher = '';
+    this.yearFrom = null;
+    this.yearTo = null;
+    this.applyFilter();
+  }
+
+  openDetail(book: any): void {
+    this.selectedBook = book;
+    this.showDetailModal = true;
+  }
+
+  closeDetail(): void {
+    this.showDetailModal = false;
+    this.selectedBook = null;
   }
 
   downloadDocument(documentId: number): void {
@@ -74,6 +101,9 @@ export class BrowseBooks {
       pageSize: this.pageSize,
       category: this.selectedCategory,
       department: this.selectedDepartment,
+      publisher: this.selectedPublisher,
+      yearFrom: this.yearFrom,
+      yearTo: this.yearTo,
       searchTerm: searchTerm,
     };
 
@@ -97,10 +127,38 @@ export class BrowseBooks {
     this.searchSubject.next(this.searchTerm);
   }
 
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize) || 1;
+  }
+
+  get pageNumbers(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(1, this.pageNumber - 2);
+    const end = Math.min(this.totalPages, this.pageNumber + 2);
+    for (let i = start; i <= end; i++) pages.push(i);
+    return pages;
+  }
+
+  get rangeStart(): number {
+    return this.totalItems === 0 ? 0 : (this.pageNumber - 1) * this.pageSize + 1;
+  }
+
+  get rangeEnd(): number {
+    return Math.min(this.pageNumber * this.pageSize, this.totalItems);
+  }
+
   // Pagination navigation
-  nextPage() {
-    this.pageNumber++;
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageNumber = page;
     this.loadData();
+  }
+
+  nextPage() {
+    if (this.pageNumber < this.totalPages) {
+      this.pageNumber++;
+      this.loadData();
+    }
   }
 
   prevPage() {

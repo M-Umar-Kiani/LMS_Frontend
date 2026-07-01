@@ -14,11 +14,11 @@ export const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: Dashboard },
-      { path: 'books', component: BooksComponent },
-      { path: 'books/add', component: AddBook },
-      { path: 'bulk-upload', component: BulkUpload },
-      { path: 'reports', component: Reports },
+      { path: 'dashboard', component: Dashboard, title: 'Dashboard | SZABIST Library Admin' },
+      { path: 'books', component: BooksComponent, title: 'Books | SZABIST Library Admin' },
+      { path: 'books/add', component: AddBook, title: 'Add Book | SZABIST Library Admin' },
+      { path: 'bulk-upload', component: BulkUpload, title: 'Bulk Upload | SZABIST Library Admin' },
+      { path: 'reports', component: Reports, title: 'Reports | SZABIST Library Admin' },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
@@ -27,8 +27,8 @@ export const routes: Routes = [
   {
     path: 'user',
     children: [
-      { path: 'dashboard', component: UserDashboard },
-      { path: 'browse-books', component: BrowseBooks },
+      { path: 'dashboard', component: UserDashboard, title: 'Dashboard | SZABIST Digital Library' },
+      { path: 'browse-books', component: BrowseBooks, title: 'Browse Books | SZABIST Digital Library' },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

@@ -2,28 +2,54 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="brand">
-      <h2>📚 LMS Admin</h2>
-      <small>Library Management</small>
+      <div class="brand-mark">
+        <span class="material-icons">school</span>
+      </div>
+      <div class="brand-text">
+        <h2>LMS Admin</h2>
+        <small>SZABIST Library</small>
+      </div>
     </div>
 
     <nav class="menu">
-      <a routerLink="/dashboard" routerLinkActive="active">📊 Dashboard</a>
-      <a routerLink="/books" routerLinkActive="active">📚 Books </a>
-      <a routerLink="/bulk-upload" routerLinkActive="active">📤 Bulk Upload</a>
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="material-icons">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/books" routerLinkActive="active">
+        <span class="material-icons">menu_book</span>
+        <span>Books</span>
+      </a>
+      <a routerLink="/bulk-upload" routerLinkActive="active">
+        <span class="material-icons">upload_file</span>
+        <span>Bulk Upload</span>
+      </a>
+      <a routerLink="/reports" routerLinkActive="active">
+        <span class="material-icons">bar_chart</span>
+        <span>Reports</span>
+      </a>
     </nav>
+
+    <div class="sidebar-footer">
+      <span class="material-icons">shield</span>
+      <span>Admin Panel</span>
+    </div>
   </aside>
 
   <!-- Main Content -->
   <div class="main">
     <!-- Topbar -->
     <header class="topbar">
-      <div></div>
+      <div class="topbar-title">Library Management System</div>
       <div class="user-info">
-        <span class="bell">🔔</span>
+        <button class="icon-action">
+          <span class="material-icons">notifications</span>
+        </button>
         <div class="profile">
-          <span class="avatar">👤</span>
-          <div>
-            <small>Admin</small>
+          <div class="avatar">A</div>
+          <div class="profile-text">
+            <strong>Admin</strong>
+            <small>Administrator</small>
           </div>
         </div>
       </div>
