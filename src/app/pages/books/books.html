@@ -22,15 +22,15 @@
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
       <option value="Book">Book</option>
-      <option value="Magazines">Magazines</option>
+      <option value="Magazine">Magazine</option>
       <option value="Article">Article</option>
       <option value="Journal">Journal</option>
       <option value="Thesis">Thesis</option>
-      <option value="Press Clippings">Press Clippings</option>
-      <option value="Faculity Publications">Faculity Publications</option>
-      <option value="Reports">Reports</option>
+      <option value="Press Clipping">Press Clipping</option>
+      <option value="Faculity Publication">Faculity Publication</option>
+      <option value="Report">Report</option>
       <option value="Guide">Guide</option>
-      <option value="Proceedings">Proceedings</option>
+      <option value="Proceeding">Proceeding</option>
 
 
       	
@@ -75,7 +75,7 @@
               <div>
                 <strong>{{ limitWords(book.title, 8) }}</strong>
                 <br />
-                <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journals'" />
+                <small *ngIf="book.category !== 'Magazine' && book.category !== 'Journal'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazine' && book.category !== 'Journal'" />
               </div>
             </div>
           </td>
@@ -169,15 +169,15 @@
           <label for="category">Category *</label>
           <select id="category" formControlName="category" name="category">
             <option>Book</option>
-            <option>Magazines</option>
+            <option>Magazine</option>
             <option>Article</option>
             <option>Journal</option>
             <option>Thesis</option>
-            <option>Press Clippings</option>
-            <option>Faculity Publications</option>
-            <option>Reports</option>
+            <option>Press Clipping</option>
+            <option>Faculity Publication</option>
+            <option>Report</option>
             <option>Guide</option>
-            <option>Proceedings</option>
+            <option>Proceeding</option>
           </select>
         </div>
 

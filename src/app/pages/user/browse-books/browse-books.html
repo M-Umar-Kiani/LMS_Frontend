@@ -17,15 +17,15 @@
     <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
       <option value="">All Categories</option>
       <option value="Book">Book</option>
-      <option value="Magazines">Magazines</option>
-      <option value="Articles">Articles</option>
+      <option value="Magazine">Magazine</option>
+      <option value="Article">Article</option>
       <option value="Journal">Journal</option>
       <option value="Thesis">Thesis</option>
-      <option value="Press Clippings">Press Clippings</option>
-      <option value="Faculity Publications">Faculity Publications</option>
-      <option value="Reports">Reports</option>
+      <option value="Press Clipping">Press Clipping</option>
+      <option value="Faculity Publication">Faculity Publication</option>
+      <option value="Report">Report</option>
       <option value="Guide">Guide</option>
-      <option value="Proceedings">Proceedings</option>
+      <option value="Proceeding">Proceeding</option>
     </select>
 
     <select [(ngModel)]="selectedDepartment" (change)="applyFilter()">
@@ -75,7 +75,7 @@
             <div class="book-info">
               <div>
                 <strong>{{ limitWords(book.title, 8) }}</strong><br />
-                <small *ngIf="book.category !== 'Magazines' && book.category !== 'Journals' && book.category !== 'Magazine'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazines' && book.category !== 'Journals' && book.category !== 'Magazine'" />
+                <small *ngIf="book.category !== 'Magazine' && book.category !== 'Journal'">by {{ limitWords(book.author, 5) }}</small><br *ngIf="book.category !== 'Magazine' && book.category !== 'Journal'" />
               </div>
             </div>
           </td>
